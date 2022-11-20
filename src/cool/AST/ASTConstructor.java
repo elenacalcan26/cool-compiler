@@ -19,6 +19,22 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitClass_def(CoolParser.Class_defContext ctx) {
-        return new ClassNode(ctx.start, new TypeNode(ctx.className), new TypeNode(ctx.inheritedClass));
+        List<FeatureNode> features = ctx.feature()
+                .stream()
+                .map(featureContext -> (FeatureNode)visit(featureContext))
+                .collect(Collectors.toList());
+
+        return new ClassNode(ctx.start, new TypeNode(ctx.className),
+                new TypeNode(ctx.inheritedClass), features);
+    }
+
+    @Override
+    public ASTNode visitVarDef(CoolParser.VarDefContext ctx) {
+        return new VarDefNode(ctx.start, (FormalNode) visit(ctx.formalDef));
+    }
+
+    @Override
+    public ASTNode visitFormal(CoolParser.FormalContext ctx) {
+        return new FormalNode(ctx.start, new IDNode(ctx.name), new TypeNode(ctx.type));
     }
 }

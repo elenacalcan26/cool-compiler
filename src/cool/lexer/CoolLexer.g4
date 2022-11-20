@@ -58,8 +58,18 @@ LE : '<=';
 fragment DIGIT : [0-9];
 fragment LETTER : [a-zA-Z];
 fragment UPPER_LETTER : [A-Z];
+fragment CLASS_NAME : UPPER_LETTER (LETTER | DIGIT)*;
 
-TYPE : UPPER_LETTER;
+TYPE : 'Int' | 'Bool' | 'Float' | 'SELF_TYPE' | CLASS_NAME;
+
+/* identificator */
+ID : (LETTER | '_')(LETTER | '_' | DIGIT)*;
+
+INT : DIGIT+;
+
+fragment DIGITS : DIGIT+;
+fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
+FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
 WS
     :   [ \n\f\r\t]+ -> skip
