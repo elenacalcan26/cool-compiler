@@ -13,5 +13,5 @@ program
     ;
 
 class_def
-    : CLASS className=TYPE (INHERITS inheritedClass=TYPE) LBRACE RBARCE
+    : CLASS className=TYPE (INHERITS inheritedClass=TYPE)? LBRACE RBRACE
     ;

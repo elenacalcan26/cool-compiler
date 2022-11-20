@@ -1,5 +1,7 @@
 package cool.compiler;
 
+import cool.AST.ASTConstructor;
+import cool.AST.ASTPrintVisitor;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
@@ -7,6 +9,7 @@ import cool.lexer.*;
 import cool.parser.*;
 
 import java.io.*;
+import java.util.List;
 
 
 public class Compiler {
@@ -43,20 +46,19 @@ public class Compiler {
                 tokenStream = new CommonTokenStream(lexer);
             else
                 tokenStream.setTokenSource(lexer);
-                
-            /*
+
+
             // Test lexer only.
-            tokenStream.fill();
-            List<Token> tokens = tokenStream.getTokens();
-            tokens.stream().forEach(token -> {
-                var text = token.getText();
-                var name = CoolLexer.VOCABULARY.getSymbolicName(token.getType());
-                
-                System.out.println(text + " : " + name);
-                //System.out.println(token);
-            });
-            */
-            
+//            tokenStream.fill();
+//            List<Token> tokens = tokenStream.getTokens();
+//            tokens.stream().forEach(token -> {
+//                var text = token.getText();
+//                var name = CoolLexer.VOCABULARY.getSymbolicName(token.getType());
+//
+//                System.out.println(text + " : " + name);
+//                //System.out.println(token);
+//            });
+
             // Parser
             if (parser == null)
                 parser = new CoolParser(tokenStream);
@@ -121,5 +123,10 @@ public class Compiler {
         }
         
         // TODO Print tree
+        var astConstructor = new ASTConstructor();
+        var astPrinter = new ASTPrintVisitor();
+
+        var ast = astConstructor.visit(globalTree);
+        ast.accept(astPrinter);
     }
 }
