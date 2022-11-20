@@ -4,10 +4,14 @@ options {
     tokenVocab = CoolLexer;
 }
 
-@header{
+@headerx{
     package cool.parser;
 }
 
 program
-    :   EOF 
-    ; 
+    : (class_def SEMICOLON)+  EOF
+    ;
+
+class_def
+    : CLASS className=TYPE (INHERITS inheritedClass=TYPE) LBRACE RBARCE
+    ;
