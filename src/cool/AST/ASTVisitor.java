@@ -16,4 +16,6 @@ public interface ASTVisitor<T> {
     T visit(PlusMinusNode plusMinusNode);
     T visit(NegateNode negateNode);
     T visit(ParenNode parenNode);
+    T visit(ComparisonNode comparisonNode);
+    T visit(NotNode notNode);
 }

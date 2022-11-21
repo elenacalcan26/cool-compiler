@@ -98,4 +98,15 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
     public ASTNode visitParen(CoolParser.ParenContext ctx) {
         return new ParenNode(ctx.start, (Expression)visit(ctx.expression));
     }
+
+    @Override
+    public ASTNode visitComparison(CoolParser.ComparisonContext ctx) {
+        return new ComparisonNode(ctx.op, (Expression) visit(ctx.leftOp),
+                (Expression) visit(ctx.rightOp));
+    }
+
+    @Override
+    public ASTNode visitNot(CoolParser.NotContext ctx) {
+        return new NotNode(ctx.op, (Expression) visit(ctx.expression));
+    }
 }

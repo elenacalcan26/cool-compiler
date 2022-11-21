@@ -144,4 +144,23 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         parenNode.expression.accept(this);
         return null;
     }
+
+    @Override
+    public Void visit(ComparisonNode comparisonNode) {
+        printIndent(comparisonNode.token.getText());
+        indent++;
+        comparisonNode.leftOp.accept(this);
+        comparisonNode.rightOp.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(NotNode notNode) {
+        printIndent(notNode.token.getText());
+        indent++;
+        notNode.expression.accept(this);
+        indent--;
+        return null;
+    }
 }
