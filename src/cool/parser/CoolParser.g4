@@ -27,7 +27,9 @@ formal
     ;
 
 expr
-    : name=ID ASSIGN args=expr   # assign
+    : name=ID op=ASSIGN args=expr   # assign
+    | op=NEW type=TYPE                  # new
+    | op=ISVOID expression=expr                # isvoid
     | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv
     | leftOp=expr op=(PLUS | MINUS) rightOp=expr # plusMinus
     | op=NEG rightOp=expr      # negate

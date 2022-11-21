@@ -18,4 +18,6 @@ public interface ASTVisitor<T> {
     T visit(ParenNode parenNode);
     T visit(ComparisonNode comparisonNode);
     T visit(NotNode notNode);
+    T visit(NewNode newNode);
+    T visit(IsVoidNode isVoidNode);
 }

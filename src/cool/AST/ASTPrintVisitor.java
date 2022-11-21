@@ -163,4 +163,22 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent--;
         return null;
     }
+
+    @Override
+    public Void visit(NewNode newNode) {
+        printIndent(newNode.token.getText());
+        indent++;
+        newNode.type.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(IsVoidNode isVoidNode) {
+        printIndent(isVoidNode.token.getText());
+        indent++;
+        isVoidNode.expression.accept(this);
+        indent--;
+        return null;
+    }
 }

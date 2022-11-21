@@ -43,7 +43,7 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitAssign(CoolParser.AssignContext ctx) {
-        return new AssignNode(ctx.start, new IDNode(ctx.name), (Expression) visit(ctx.args));
+        return new AssignNode(ctx.op, new IDNode(ctx.name), (Expression) visit(ctx.args));
     }
 
     @Override
@@ -108,5 +108,15 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitNot(CoolParser.NotContext ctx) {
         return new NotNode(ctx.op, (Expression) visit(ctx.expression));
+    }
+
+    @Override
+    public ASTNode visitNew(CoolParser.NewContext ctx) {
+        return new NewNode(ctx.op, new TypeNode(ctx.type));
+    }
+
+    @Override
+    public ASTNode visitIsvoid(CoolParser.IsvoidContext ctx) {
+        return new IsVoidNode(ctx.op, (Expression) visit(ctx.expression));
     }
 }
