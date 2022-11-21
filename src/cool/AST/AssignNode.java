@@ -2,16 +2,14 @@ package cool.AST;
 
 import org.antlr.v4.runtime.Token;
 
-public class VarDefNode extends FeatureNode {
+public class AssignNode extends Expression {
     IDNode name;
-    TypeNode type;
-    Expression val;
+    Expression args;
 
-    VarDefNode(Token token, IDNode name, TypeNode type, Expression val) {
+    AssignNode(Token token, IDNode name, Expression args) {
         super(token);
         this.name = name;
-        this.type = type;
-        this.val = val;
+        this.args = args;
     }
 
     public <T> T accept(ASTVisitor<T> visitor) {

@@ -17,7 +17,7 @@ class_def
     ;
 
 feature
-    : formalDef=formal (ASSIGN val=expr) # varDef
+    : name=ID COLON type=TYPE (ASSIGN val=expr)? # varDef
     ;
 
 formal
@@ -25,7 +25,7 @@ formal
     ;
 
 expr
-    : name=ID ASSIGN expr   # assignment
+    : name=ID ASSIGN args=expr   # assign
     | ID    # id
     | INT   # int
     | BOOL  # bool

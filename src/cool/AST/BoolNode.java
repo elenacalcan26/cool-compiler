@@ -2,8 +2,8 @@ package cool.AST;
 
 import org.antlr.v4.runtime.Token;
 
-public class IDNode extends Expression {
-    IDNode(Token token) {
+public class BoolNode extends ASTNode {
+    BoolNode(Token token) {
         super(token);
     }
 

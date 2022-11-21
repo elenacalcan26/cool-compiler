@@ -23,7 +23,8 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(TypeNode type) {
-        if (type.token != null)  printIndent(type.token.getText());
+        if (type.token != null)
+            printIndent(type.token.getText());
         return null;
     }
 
@@ -41,7 +42,8 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(IDNode idNode) {
-        printIndent(idNode.token.getText());
+        if (idNode.token != null)
+            printIndent(idNode.token.getText());
         return null;
     }
 
@@ -58,9 +60,34 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
     @Override
     public Void visit(VarDefNode varDefNode) {
         printIndent("attribute");
-//        indent++;
-        varDefNode.formal.accept(this);
-//        indent--;
+        indent++;
+        varDefNode.name.accept(this);
+        varDefNode.type.accept(this);
+        if (varDefNode.val != null)
+            varDefNode.val.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(IntNode intNode) {
+        printIndent(intNode.token.getText());
+        return null;
+    }
+
+    @Override
+    public Void visit(BoolNode boolNode) {
+        printIndent(boolNode.token.getText());
+        return null;
+    }
+
+    @Override
+    public Void visit(AssignNode assignNode) {
+        printIndent(assignNode.token.getText());
+        indent++;
+        assignNode.name.accept(this);
+        assignNode.args.accept(this);
+        indent--;
         return null;
     }
 }

@@ -71,6 +71,8 @@ fragment DIGITS : DIGIT+;
 fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
 FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
+BOOL : 'true' | 'false';
+
 WS
     :   [ \n\f\r\t]+ -> skip
     ; 

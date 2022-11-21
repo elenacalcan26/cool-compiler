@@ -30,11 +30,34 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitVarDef(CoolParser.VarDefContext ctx) {
-        return new VarDefNode(ctx.start, (FormalNode) visit(ctx.formalDef));
+        var initVal = ctx.val == null? null : (Expression)visit(ctx.val);
+
+        return new VarDefNode(ctx.start, new IDNode(ctx.name), new TypeNode(ctx.type),
+                initVal);
     }
 
     @Override
     public ASTNode visitFormal(CoolParser.FormalContext ctx) {
         return new FormalNode(ctx.start, new IDNode(ctx.name), new TypeNode(ctx.type));
+    }
+
+    @Override
+    public ASTNode visitAssign(CoolParser.AssignContext ctx) {
+        return new AssignNode(ctx.start, new IDNode(ctx.name), (Expression) visit(ctx.args));
+    }
+
+    @Override
+    public ASTNode visitId(CoolParser.IdContext ctx) {
+        return new IDNode(ctx.ID().getSymbol());
+    }
+
+    @Override
+    public ASTNode visitInt(CoolParser.IntContext ctx) {
+        return new IntNode(ctx.INT().getSymbol());
+    }
+
+    @Override
+    public ASTNode visitBool(CoolParser.BoolContext ctx) {
+        return new BoolNode(ctx.BOOL().getSymbol());
     }
 }
