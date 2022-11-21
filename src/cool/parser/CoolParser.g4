@@ -28,6 +28,8 @@ formal
 
 expr
     : name=ID op=ASSIGN args=expr   # assign
+    | caller=expr (A_ROUND callType=TYPE)? DOT funcName=ID LPAREN (args+=expr (COMMA args+=expr)*)? RPAREN    # explicitDispatch
+    | funcName=ID LPAREN (args+=expr (COMMA args+=expr)*)? RPAREN                  # implicitDispatch
     | op=NEW type=TYPE                  # new
     | op=ISVOID expression=expr                # isvoid
     | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv

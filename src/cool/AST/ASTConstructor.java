@@ -119,4 +119,28 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
     public ASTNode visitIsvoid(CoolParser.IsvoidContext ctx) {
         return new IsVoidNode(ctx.op, (Expression) visit(ctx.expression));
     }
+
+    @Override
+    public ASTNode visitImplicitDispatch(CoolParser.ImplicitDispatchContext ctx) {
+        List<Expression> args = ctx.args
+                .stream()
+                .map(exprContext -> (Expression)visit(exprContext))
+                .collect(Collectors.toList());
+
+        return new ImplicitDispatch(ctx.start, new IDNode(ctx.funcName), args);
+    }
+
+    @Override
+    public ASTNode visitExplicitDispatch(CoolParser.ExplicitDispatchContext ctx) {
+        List<Expression> args = ctx.args
+                .stream()
+                .map(exprContext -> (Expression) visit(exprContext))
+                .toList();
+
+        return new ExplicitDispatchNode(ctx.start,
+                (Expression) visit(ctx.caller),
+                new TypeNode(ctx.callType),
+                new IDNode(ctx.funcName),
+                args);
+    }
 }

@@ -43,6 +43,7 @@ COMMA : ',';
 DOT : '.';
 NEG : '~';
 ASSIGN : '<-';
+A_ROUND : '@';
 
 /* operatori aritmetici */
 PLUS : '+';

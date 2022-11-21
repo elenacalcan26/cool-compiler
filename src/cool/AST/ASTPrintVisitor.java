@@ -181,4 +181,28 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent--;
         return null;
     }
+
+    @Override
+    public Void visit(ExplicitDispatchNode explicitDispatchNode) {
+        printIndent(".");
+        List<Expression> args = explicitDispatchNode.args;
+        indent++;
+        explicitDispatchNode.caller.accept(this);
+        explicitDispatchNode.callType.accept(this);
+        explicitDispatchNode.funcName.accept(this);
+        args.forEach(arg -> arg.accept(this));
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(ImplicitDispatch implicitDispatch) {
+        printIndent("implicit dispatch");
+        List<Expression> args = implicitDispatch.args;
+        indent++;
+        implicitDispatch.funcName.accept(this);
+        args.forEach(arg -> arg.accept(this));
+        indent--;
+        return null;
+    }
 }
