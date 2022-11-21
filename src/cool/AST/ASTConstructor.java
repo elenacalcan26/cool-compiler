@@ -151,4 +151,21 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
                 (Expression) visit(ctx.thenBranch),
                 (Expression) visit(ctx.elseBranch));
     }
+
+    @Override
+    public ASTNode visitWhile(CoolParser.WhileContext ctx) {
+        return new WhileNode(ctx.start,
+                (Expression) visit(ctx.cond),
+                (Expression) visit(ctx.expression));
+    }
+
+    @Override
+    public ASTNode visitBlock(CoolParser.BlockContext ctx) {
+        List<Expression> body = ctx.blockBody
+                .stream()
+                .map(exprContext -> (Expression)visit(exprContext))
+                .toList();
+
+        return new BlockNode(ctx.start, body);
+    }
 }

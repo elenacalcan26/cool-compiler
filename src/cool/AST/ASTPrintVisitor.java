@@ -83,7 +83,7 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(AssignNode assignNode) {
-        printIndent(assignNode.token.getText());
+        printIndent("<-");
         indent++;
         assignNode.name.accept(this);
         assignNode.args.accept(this);
@@ -213,6 +213,26 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         ifNode.cond.accept(this);
         ifNode.thenBranch.accept(this);
         ifNode.elseBranch.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(WhileNode whileNode) {
+        printIndent(whileNode.token.getText());
+        indent++;
+        whileNode.cond.accept(this);
+        whileNode.expression.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(BlockNode blockNode) {
+        printIndent("block");
+        List<Expression> exprs = blockNode.blockBody;
+        indent++;
+        exprs.forEach(expr -> expr.accept(this));
         indent--;
         return null;
     }

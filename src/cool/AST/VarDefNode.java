@@ -13,7 +13,6 @@ public class VarDefNode extends FeatureNode {
         this.type = type;
         this.val = val;
     }
-
     public <T> T accept(ASTVisitor<T> visitor) {
         return visitor.visit(this);
     }

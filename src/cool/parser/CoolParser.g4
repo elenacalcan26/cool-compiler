@@ -27,10 +27,11 @@ formal
     ;
 
 expr
-    : name=ID op=ASSIGN args=expr   # assign
-    | caller=expr (A_ROUND callType=TYPE)? DOT funcName=ID LPAREN (args+=expr (COMMA args+=expr)*)? RPAREN    # explicitDispatch
+    : caller=expr (A_ROUND callType=TYPE)? DOT funcName=ID LPAREN (args+=expr (COMMA args+=expr)*)? RPAREN    # explicitDispatch
     | funcName=ID LPAREN (args+=expr (COMMA args+=expr)*)? RPAREN                  # implicitDispatch
     | IF cond=expr THEN thenBranch=expr ELSE elseBranch=expr FI                    # if
+    | WHILE cond=expr LOOP expression=expr POOL                 # while
+    | LBRACE (blockBody+=expr SEMICOLON)+ RBRACE                     # block
     | op=NEW type=TYPE                  # new
     | op=ISVOID expression=expr                # isvoid
     | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv
@@ -43,4 +44,5 @@ expr
     | INT   # int
     | STRING # string
     | BOOL  # bool
+    | name=ID op=ASSIGN args=expr   # assign
     ;
