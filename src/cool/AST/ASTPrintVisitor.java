@@ -103,4 +103,10 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent--;
         return null;
     }
+
+    @Override
+    public Void visit(StringNode stringNode) {
+        printIndent(stringNode.token.getText());
+        return null;
+    }
 }

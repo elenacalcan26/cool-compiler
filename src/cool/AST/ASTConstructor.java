@@ -71,4 +71,9 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
         return new FuncDefNode(ctx.start, new IDNode(ctx.funcName),
                 new TypeNode(ctx.funcType), formalNodes, (Expression)visit(ctx.body));
     }
+
+    @Override
+    public ASTNode visitString(CoolParser.StringContext ctx) {
+        return new StringNode(ctx.start);
+    }
 }

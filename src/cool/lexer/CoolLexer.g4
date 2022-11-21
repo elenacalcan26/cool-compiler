@@ -72,6 +72,12 @@ fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
 FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
 BOOL : 'true' | 'false';
+STRING : '"' ('\\"' | . )*? '"' {
+    String s = getText();
+
+    setText(s.substring(1, s.length() - 1));
+};
+
 
 WS
     :   [ \n\f\r\t]+ -> skip

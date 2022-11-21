@@ -30,5 +30,6 @@ expr
     : name=ID ASSIGN args=expr   # assign
     | ID    # id
     | INT   # int
+    | STRING # string
     | BOOL  # bool
     ;
