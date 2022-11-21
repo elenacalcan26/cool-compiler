@@ -76,4 +76,26 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
     public ASTNode visitString(CoolParser.StringContext ctx) {
         return new StringNode(ctx.start);
     }
+
+    @Override
+    public ASTNode visitPlusMinus(CoolParser.PlusMinusContext ctx) {
+        return new PlusMinusNode(ctx.op, (Expression) visit(ctx.leftOp),
+                (Expression)visit(ctx.rightOp));
+    }
+
+    @Override
+    public ASTNode visitMulDiv(CoolParser.MulDivContext ctx) {
+        return new MulDivNode(ctx.op, (Expression) visit(ctx.leftOp),
+                (Expression)visit(ctx.rightOp));
+    }
+
+    @Override
+    public ASTNode visitNegate(CoolParser.NegateContext ctx) {
+        return new NegateNode(ctx.op, (Expression)visit(ctx.rightOp));
+    }
+
+    @Override
+    public ASTNode visitParen(CoolParser.ParenContext ctx) {
+        return new ParenNode(ctx.start, (Expression)visit(ctx.expression));
+    }
 }

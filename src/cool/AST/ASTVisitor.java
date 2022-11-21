@@ -12,4 +12,8 @@ public interface ASTVisitor<T> {
     T visit(AssignNode assignNode);
     T visit(FuncDefNode funcDefNode);
     T visit(StringNode stringNode);
+    T visit(MulDivNode mulDivNode);
+    T visit(PlusMinusNode plusMinusNode);
+    T visit(NegateNode negateNode);
+    T visit(ParenNode parenNode);
 }

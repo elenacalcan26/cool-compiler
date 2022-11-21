@@ -28,6 +28,10 @@ formal
 
 expr
     : name=ID ASSIGN args=expr   # assign
+    | op=NEG rightOp=expr      # negate
+    | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv
+    | leftOp=expr op=(PLUS | MINUS) rightOp=expr # plusMinus
+    | LPAREN expression=expr RPAREN        # paren
     | ID    # id
     | INT   # int
     | STRING # string

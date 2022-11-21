@@ -109,4 +109,39 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         printIndent(stringNode.token.getText());
         return null;
     }
+
+    @Override
+    public Void visit(MulDivNode mulDivNode) {
+        printIndent(mulDivNode.token.getText());
+        indent++;
+        mulDivNode.leftOp.accept(this);
+        mulDivNode.rightOp.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(PlusMinusNode plusMinusNode) {
+        printIndent(plusMinusNode.token.getText());
+        indent++;
+        plusMinusNode.leftOp.accept(this);
+        plusMinusNode.rightOp.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(NegateNode negateNode) {
+        printIndent(negateNode.token.getText());
+        indent++;
+        negateNode.rightOp.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(ParenNode parenNode) {
+        parenNode.expression.accept(this);
+        return null;
+    }
 }
