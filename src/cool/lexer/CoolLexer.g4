@@ -17,6 +17,7 @@ tokens { ERROR }
 CLASS : 'class';
 IF : 'if';
 FI : 'fi';
+ELSE : 'else';
 IN : 'IN';
 INHERITS : 'inherits';
 ISVOID : 'isvoid';

@@ -22,4 +22,5 @@ public interface ASTVisitor<T> {
     T visit(IsVoidNode isVoidNode);
     T visit(ExplicitDispatchNode explicitDispatchNode);
     T visit(ImplicitDispatch implicitDispatch);
+    T visit(IfNode ifNode);
 }

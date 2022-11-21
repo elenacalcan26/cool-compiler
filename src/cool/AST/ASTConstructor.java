@@ -143,4 +143,12 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
                 new IDNode(ctx.funcName),
                 args);
     }
+
+    @Override
+    public ASTNode visitIf(CoolParser.IfContext ctx) {
+        return new IfNode(ctx.start,
+                (Expression) visit(ctx.cond),
+                (Expression) visit(ctx.thenBranch),
+                (Expression) visit(ctx.elseBranch));
+    }
 }
