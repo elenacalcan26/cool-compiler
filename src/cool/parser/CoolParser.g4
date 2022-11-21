@@ -19,7 +19,7 @@ class_def
 feature
     : funcName=ID LPAREN (formals+=formal (COMMA formals+=formal)*)? RPAREN COLON funcType=TYPE
             LBRACE body=expr RBRACE # funcDef
-    | name=ID COLON type=TYPE (ASSIGN val=expr)? # varDef
+    |  name=ID COLON type=TYPE (ASSIGN val=expr)? # varDef
     ;
 
 formal
@@ -32,6 +32,7 @@ expr
     | IF cond=expr THEN thenBranch=expr ELSE elseBranch=expr FI                    # if
     | WHILE cond=expr LOOP expression=expr POOL                 # while
     | LBRACE (blockBody+=expr SEMICOLON)+ RBRACE                     # block
+    | LET args+=let_def (COMMA args+=let_def)* IN body=expr                      #let
     | op=NEW type=TYPE                  # new
     | op=ISVOID expression=expr                # isvoid
     | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv
@@ -46,3 +47,5 @@ expr
     | BOOL  # bool
     | name=ID op=ASSIGN args=expr   # assign
     ;
+
+let_def : name=ID COLON type=TYPE (ASSIGN val=expr)?;

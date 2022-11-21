@@ -18,7 +18,7 @@ CLASS : 'class';
 IF : 'if';
 FI : 'fi';
 ELSE : 'else';
-IN : 'IN';
+IN : 'in';
 INHERITS : 'inherits';
 ISVOID : 'isvoid';
 LET : 'let';
@@ -62,7 +62,7 @@ fragment LETTER : [a-zA-Z];
 fragment UPPER_LETTER : [A-Z];
 fragment CLASS_NAME : UPPER_LETTER (LETTER | DIGIT)*;
 
-TYPE : 'Int' | 'Bool' | 'Float' | 'SELF_TYPE' | CLASS_NAME;
+TYPE : 'Int' | 'Bool' | 'Float' | 'Object' | 'SELF_TYPE' | CLASS_NAME;
 
 /* identificator */
 ID : (LETTER | '_')(LETTER | '_' | DIGIT)*;

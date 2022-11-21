@@ -24,6 +24,8 @@ public interface ASTVisitor<T> {
     T visit(ImplicitDispatch implicitDispatch);
     T visit(IfNode ifNode);
     T visit(WhileNode whileNode);
+    T visit(LetDefNode letDefNode);
+    T visit(LetInNode  letInNode);
 
     T visit(BlockNode blockNode);
 }

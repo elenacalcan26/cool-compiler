@@ -236,4 +236,26 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent--;
         return null;
     }
+
+    @Override
+    public Void visit(LetDefNode letDefNode) {
+        printIndent("local");
+        indent++;
+        letDefNode.name.accept(this);
+        letDefNode.type.accept(this);
+        letDefNode.val.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(LetInNode letInNode) {
+        printIndent(letInNode.token.getText());
+        List<LetDefNode> args = letInNode.args;
+        indent++;
+        args.forEach(arg -> arg.accept(this));
+        letInNode.body.accept(this);
+        indent--;
+        return null;
+    }
 }

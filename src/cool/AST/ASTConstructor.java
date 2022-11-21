@@ -168,4 +168,22 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
         return new BlockNode(ctx.start, body);
     }
+
+    @Override
+    public ASTNode visitLet_def(CoolParser.Let_defContext ctx) {
+        return new LetDefNode(ctx.start,
+                new IDNode(ctx.name),
+                new TypeNode(ctx.type),
+                (Expression) visit(ctx.val));
+    }
+
+    @Override
+    public ASTNode visitLet(CoolParser.LetContext ctx) {
+        List<LetDefNode> args = ctx.args
+                .stream()
+                .map(let_defContext -> (LetDefNode)visit(let_defContext))
+                .collect(Collectors.toList());
+
+        return new LetInNode(ctx.start, args, (Expression) visit(ctx.body));
+    }
 }
