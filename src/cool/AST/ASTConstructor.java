@@ -186,4 +186,23 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
         return new LetInNode(ctx.start, args, (Expression) visit(ctx.body));
     }
+
+    @Override
+    public ASTNode visitCase_branch(CoolParser.Case_branchContext ctx) {
+        return new CaseBranchNode(ctx.start,
+                new IDNode(ctx.name),
+                new TypeNode(ctx.type),
+                (Expression) visit(ctx.body));
+    }
+
+    @Override
+    public ASTNode visitCase(CoolParser.CaseContext ctx) {
+        List<CaseBranchNode> branches = ctx.branches
+                .stream()
+                .map(case_branchContext -> (CaseBranchNode)visit(case_branchContext))
+                .toList();
+
+        return new CaseNode(ctx.start, (Expression)visit(ctx.var), branches);
+    }
+
 }

@@ -45,6 +45,7 @@ DOT : '.';
 NEG : '~';
 ASSIGN : '<-';
 A_ROUND : '@';
+IMPLICATION : '=>';
 
 /* operatori aritmetici */
 PLUS : '+';

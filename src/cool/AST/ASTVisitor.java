@@ -26,6 +26,7 @@ public interface ASTVisitor<T> {
     T visit(WhileNode whileNode);
     T visit(LetDefNode letDefNode);
     T visit(LetInNode  letInNode);
-
+    T visit(CaseBranchNode caseBranchNode);
+    T visit(CaseNode caseNode);
     T visit(BlockNode blockNode);
 }

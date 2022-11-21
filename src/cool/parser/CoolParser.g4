@@ -33,6 +33,7 @@ expr
     | WHILE cond=expr LOOP expression=expr POOL                 # while
     | LBRACE (blockBody+=expr SEMICOLON)+ RBRACE                     # block
     | LET args+=let_def (COMMA args+=let_def)* IN body=expr                      #let
+    | CASE var=expr OF (branches+=case_branch)* ESAC                # case
     | op=NEW type=TYPE                  # new
     | op=ISVOID expression=expr                # isvoid
     | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv
@@ -49,3 +50,4 @@ expr
     ;
 
 let_def : name=ID COLON type=TYPE (ASSIGN val=expr)?;
+case_branch : name=ID COLON type=TYPE IMPLICATION body=expr SEMICOLON;

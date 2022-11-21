@@ -258,4 +258,26 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent--;
         return null;
     }
+
+    @Override
+    public Void visit(CaseBranchNode caseBranchNode) {
+        printIndent("case branch");
+        indent++;
+        caseBranchNode.name.accept(this);
+        caseBranchNode.type.accept(this);
+        caseBranchNode.body.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(CaseNode caseNode) {
+        printIndent(caseNode.token.getText());
+        List<CaseBranchNode> branches = caseNode.branches;
+        indent++;
+        caseNode.var.accept(this);
+        branches.forEach(branch -> branch.accept(this));
+        indent--;
+        return null;
+    }
 }
