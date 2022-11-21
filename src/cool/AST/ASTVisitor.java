@@ -10,4 +10,5 @@ public interface ASTVisitor<T> {
     T visit(IntNode intNode);
     T visit(BoolNode boolNode);
     T visit(AssignNode assignNode);
+    T visit(FuncDefNode funcDefNode);
 }

@@ -49,7 +49,7 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(FormalNode formalNode) {
-//        printIndent(formalNode.token.getText());
+        printIndent("formal");
         indent++;
         formalNode.name.accept(this);
         formalNode.type.accept(this);
@@ -87,6 +87,19 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent++;
         assignNode.name.accept(this);
         assignNode.args.accept(this);
+        indent--;
+        return null;
+    }
+
+    @Override
+    public Void visit(FuncDefNode funcDefNode) {
+        printIndent("method");
+        List<FormalNode> params = funcDefNode.funcParams;
+        indent++;
+        funcDefNode.funcName.accept(this);
+        params.forEach(param -> param.accept(this));
+        funcDefNode.funcType.accept(this);
+        funcDefNode.body.accept(this);
         indent--;
         return null;
     }

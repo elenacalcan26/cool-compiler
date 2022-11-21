@@ -60,4 +60,15 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
     public ASTNode visitBool(CoolParser.BoolContext ctx) {
         return new BoolNode(ctx.BOOL().getSymbol());
     }
+
+    @Override
+    public ASTNode visitFuncDef(CoolParser.FuncDefContext ctx) {
+        List<FormalNode> formalNodes = ctx.formals
+                .stream()
+                .map(formalContext -> (FormalNode)visit(formalContext))
+                .collect(Collectors.toList());
+
+        return new FuncDefNode(ctx.start, new IDNode(ctx.funcName),
+                new TypeNode(ctx.funcType), formalNodes, (Expression)visit(ctx.body));
+    }
 }

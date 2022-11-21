@@ -17,7 +17,9 @@ class_def
     ;
 
 feature
-    : name=ID COLON type=TYPE (ASSIGN val=expr)? # varDef
+    : funcName=ID LPAREN (formals+=formal (COMMA formals+=formal)*)? RPAREN COLON funcType=TYPE
+            LBRACE body=expr RBRACE # funcDef
+    | name=ID COLON type=TYPE (ASSIGN val=expr)? # varDef
     ;
 
 formal
