@@ -75,7 +75,7 @@ fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
 FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
 BOOL : 'true' | 'false';
-STRING : '"' ('\\"' | .)*? (  '"'
+STRING : '"' ('\\"' | .)*? ('"'
        | EOF { raiseError("EOF in string constant"); })
 
     {
@@ -111,6 +111,18 @@ STRING : '"' ('\\"' | .)*? (  '"'
 
         setText(newStr.toString());
     }
+    ;
+
+fragment NEW_LINE : '\r'? '\n';
+
+LINE_COMMENT
+    : '--' .*? (NEW_LINE | EOF) -> skip
+    ;
+
+BLOCK_COMMENT
+    : '(*'
+      (BLOCK_COMMENT | .)*?
+      '*)' -> skip
     ;
 
 WS

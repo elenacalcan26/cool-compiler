@@ -243,7 +243,9 @@ public class ASTPrintVisitor implements ASTVisitor<Void> {
         indent++;
         letDefNode.name.accept(this);
         letDefNode.type.accept(this);
-        letDefNode.val.accept(this);
+        if (letDefNode.val != null)
+            letDefNode.val.accept(this);
+
         indent--;
         return null;
     }

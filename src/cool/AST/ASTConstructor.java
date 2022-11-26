@@ -171,10 +171,12 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitLet_def(CoolParser.Let_defContext ctx) {
+        var initVal = ctx.val == null? null : (Expression)visit(ctx.val);
+
         return new LetDefNode(ctx.start,
                 new IDNode(ctx.name),
                 new TypeNode(ctx.type),
-                (Expression) visit(ctx.val));
+                initVal);
     }
 
     @Override
