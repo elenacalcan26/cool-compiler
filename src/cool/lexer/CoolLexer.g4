@@ -75,13 +75,44 @@ fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
 FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
 BOOL : 'true' | 'false';
-STRING : '"' ('\\"' | . )*? '"' {
-    String s = getText();
+STRING : '"' ('\\"' | .)*? (  '"'
+       | EOF { raiseError("EOF in string constant"); })
 
-    setText(s.substring(1, s.length() - 1));
-};
+    {
+        String s = getText();
+        s = s.substring(1, s.length() - 1);
+        StringBuilder newStr = new StringBuilder();
+        int len = s.length();
+        int i = 0;
 
+        while (i < len) {
+            char ch = s.charAt(i);
+
+            if (ch == '\\') {
+                i++;
+                char nextCh = s.charAt(i);
+
+                if (nextCh == 'n') {
+                    newStr.append('\n');
+                } else if (nextCh == 't') {
+                    newStr.append('\t');
+                } else if (nextCh == 'f') {
+                    newStr.append('\f');
+                } else if (nextCh == 'b') {
+                    newStr.append('\b');
+                } else {
+                    newStr.append(nextCh);
+                }
+            } else {
+                newStr.append(ch);
+            }
+            i++;
+        }
+
+        setText(newStr.toString());
+    }
+    ;
 
 WS
     :   [ \n\f\r\t]+ -> skip
-    ; 
+    ;
