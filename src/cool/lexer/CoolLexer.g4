@@ -75,9 +75,9 @@ fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
 FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
 BOOL : 'true' | 'false';
-STRING : '"' ('\\"' | .)*? ('"'
-       | EOF { raiseError("EOF in string constant"); })
-
+STRING : '"' ('\\' NEW_LINE | .)*? ( '"'
+        | EOF { raiseError(" EOF in string constant "); }
+        | NEW_LINE { raiseError(" Unterminated string constant "); })
     {
         String s = getText();
         s = s.substring(1, s.length() - 1);
@@ -85,8 +85,18 @@ STRING : '"' ('\\"' | .)*? ('"'
         int len = s.length();
         int i = 0;
 
+        if (len > 1024) {
+            raiseError("String constant too long");
+            return;
+        }
+
         while (i < len) {
             char ch = s.charAt(i);
+
+            if (ch == '\0') {
+                raiseError("String contains null character");
+                return;
+            }
 
             if (ch == '\\') {
                 i++;
@@ -122,9 +132,14 @@ LINE_COMMENT
 BLOCK_COMMENT
     : '(*'
       (BLOCK_COMMENT | .)*?
-      '*)' -> skip
+      ('*)' { skip(); }
+    | EOF { raiseError("EOF in comment"); })
     ;
+
+HANGING_COMMENT: '*)' { raiseError("Unmatched *)"); };
 
 WS
     :   [ \n\f\r\t]+ -> skip
     ;
+
+INVALID: . { raiseError("Invalid character: " + getText()); };
