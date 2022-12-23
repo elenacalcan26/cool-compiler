@@ -1,5 +1,11 @@
 package cool.AST;
 
+/*
+    Interfata de vizitare a AST-ului
+
+    Se defineste cate o metoda visit() pentru fiecare tip de nod de AST
+    pe care vrem sa il vizitam
+ */
 public interface ASTVisitor<T> {
     T visit(ProgramNode programNode);
     T visit(TypeNode type);

@@ -7,7 +7,6 @@ import java.util.*;
 
 public abstract class ASTNode {
     Token token;
-
     ASTNode(Token token) {
         this.token = token;
     }

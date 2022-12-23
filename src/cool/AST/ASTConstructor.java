@@ -6,6 +6,7 @@ import cool.parser.CoolParserBaseVisitor;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/* Construieste AST-ul in folosindu-se de parse tree-ul generat de antlr */
 public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitProgram(CoolParser.ProgramContext ctx) {
@@ -206,5 +207,4 @@ public class ASTConstructor extends CoolParserBaseVisitor<ASTNode> {
 
         return new CaseNode(ctx.start, (Expression)visit(ctx.var), branches);
     }
-
 }

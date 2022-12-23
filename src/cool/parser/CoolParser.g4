@@ -4,7 +4,7 @@ options {
     tokenVocab = CoolLexer;
 }
 
-@headerx{
+@header{
     package cool.parser;
 }
 

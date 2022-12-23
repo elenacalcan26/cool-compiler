@@ -13,6 +13,8 @@ tokens { ERROR }
     }
 }
 
+/* Sunt definite categoriile lexicale cu lexemul corespunzator */
+
 /* cuvinte cheie */
 CLASS : 'class';
 IF : 'if';
@@ -62,6 +64,8 @@ fragment DIGIT : [0-9];
 fragment LETTER : [a-zA-Z];
 fragment UPPER_LETTER : [A-Z];
 fragment CLASS_NAME : UPPER_LETTER (LETTER | DIGIT)*;
+
+/* tip de data */
 
 TYPE : 'Int' | 'Bool' | 'Float' | 'Object' | 'SELF_TYPE' | CLASS_NAME;
 

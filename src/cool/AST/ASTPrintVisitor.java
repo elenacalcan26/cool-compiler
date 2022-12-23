@@ -2,6 +2,8 @@ package cool.AST;
 
 import java.util.List;
 
+/* Printarea AST-ului */
+
 public class ASTPrintVisitor implements ASTVisitor<Void> {
     private int indent = 0;
 
