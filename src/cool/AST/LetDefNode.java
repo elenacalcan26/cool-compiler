@@ -1,5 +1,6 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class LetDefNode extends ASTNode {
@@ -7,8 +8,12 @@ public class LetDefNode extends ASTNode {
     TypeNode type;
     Expression val;
 
-    LetDefNode(Token token, IDNode name, TypeNode type, Expression val) {
-        super(token);
+    LetDefNode(Token token,
+               IDNode name,
+               TypeNode type,
+               Expression val,
+               ParserRuleContext ctx) {
+        super(token, ctx);
         this.name = name;
         this.type = type;
         this.val = val;

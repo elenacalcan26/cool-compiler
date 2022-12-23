@@ -1,13 +1,14 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class PlusMinusNode extends Expression {
     Expression leftOp;
     Expression rightOp;
 
-    PlusMinusNode(Token token, Expression leftOp, Expression rightOp) {
-        super(token);
+    PlusMinusNode(Token token, Expression leftOp, Expression rightOp, ParserRuleContext ctx) {
+        super(token, ctx);
         this.leftOp = leftOp;
         this.rightOp = rightOp;
     }

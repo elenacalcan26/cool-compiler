@@ -1,13 +1,14 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class AssignNode extends Expression {
     IDNode name;
     Expression args;
 
-    AssignNode(Token token, IDNode name, Expression args) {
-        super(token);
+    AssignNode(Token token, IDNode name, Expression args, ParserRuleContext ctx) {
+        super(token, ctx);
         this.name = name;
         this.args = args;
     }
