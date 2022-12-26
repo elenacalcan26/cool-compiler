@@ -59,6 +59,21 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(IDNode idNode) {
+        var symbol = idNode.getSymbol();
+        var scope = idNode.getScope();
+
+        if (symbol == null) return null;
+
+        if (scope == null) return null;
+        var idSymbol = (IdSymbol) scope.lookup(symbol.name);
+
+        if (idSymbol == null) {
+            SymbolTable.error(idNode.ctx, idNode.token, "ceva");
+
+            return null;
+        }
+
+
         return null;
     }
 
@@ -74,7 +89,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         // cautam recursiv tipul parametrului formal
 
         var formalType = currScope.lookup(type.token.getText());
-
 
         if (formalType == null) {
             SymbolTable.error(

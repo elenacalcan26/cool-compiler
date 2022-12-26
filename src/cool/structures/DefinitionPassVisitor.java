@@ -73,17 +73,28 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(IDNode idNode) {
-        var symbol = (IdSymbol)currentScope.lookup(idNode.token.getText());
-
-        idNode.setScope(currentScope);
-
-        if (symbol == null) {
+//        var symbol = (IdSymbol)currentScope.lookup(idNode.token.getText());
+//
+//        idNode.setScope(currentScope);
+//
+//        if (symbol == null) {
 //            SymbolTable.error("ceva err");
+//
+//            return null;
+//        }
+//
+//        idNode.setSymbol(symbol);
 
-            return null;
+        if (currentScope instanceof LetSymbol ) {
+            if (currentScope.lookup(idNode.token.getText()) == null) {
+                SymbolTable.error(
+                        idNode.ctx,
+                        idNode.token,
+                        "Undefined identifier " + idNode.token.getText()
+                );
+                return null;
+            }
         }
-
-        idNode.setSymbol(symbol);
 
         return null;
     }
@@ -224,7 +235,9 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
 //        currentScope = funcSymbol;
 
-        if (!currentScope.add(funcSymbol)) {
+        var lookedSymbol = currentScope.lookup(funcSymbol.name);
+
+        if (lookedSymbol instanceof MethodSymbol) {
             SymbolTable.error(
                     funcDefNode.ctx,
                     funcDefNode.token,
@@ -233,6 +246,9 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
             return null;
         }
+
+        // ar trebui sa adaug simbolul
+        currentScope.add(funcSymbol);
 
         funcSymbol.type = new TypeSymbol(type.token.getText());
 
@@ -344,16 +360,22 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
             letDefNode.val.accept(this);
         }
 
-        currentScope = currentScope.getParent();
+        currentScope.add(symbol);
 
         return null;
     }
 
     @Override
     public Void visit(LetInNode letInNode) {
+        var letSymbol = new LetSymbol(currentScope);
+        letInNode.symbol = letSymbol;
+//        currentScope.add()
+        currentScope = letSymbol;
 
         letInNode.args.forEach(arg -> arg.accept(this));
         letInNode.body.accept(this);
+
+        currentScope = currentScope.getParent();
 
         return null;
     }
