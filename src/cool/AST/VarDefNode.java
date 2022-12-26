@@ -4,9 +4,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class VarDefNode extends FeatureNode {
-    IDNode name;
-    TypeNode type;
-    Expression val;
+    public IDNode name;
+    public TypeNode type;
+    public Expression val;
 
     VarDefNode(Token token,
                IDNode name,

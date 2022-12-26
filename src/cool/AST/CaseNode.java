@@ -6,8 +6,8 @@ import org.antlr.v4.runtime.Token;
 import java.util.List;
 
 public class CaseNode extends Expression {
-    Expression var;
-    List<CaseBranchNode> branches;
+    public Expression var;
+    public List<CaseBranchNode> branches;
 
     CaseNode(Token token,
              Expression var,

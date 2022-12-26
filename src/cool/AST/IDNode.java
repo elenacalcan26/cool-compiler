@@ -2,11 +2,12 @@ package cool.AST;
 
 import cool.structures.IdSymbol;
 import cool.structures.Scope;
+import cool.structures.Symbol;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class IDNode extends Expression {
-    private IdSymbol symbol;
+    private Symbol symbol;
     private Scope scope;
 
     IDNode(Token token, ParserRuleContext ctx) {
@@ -17,7 +18,7 @@ public class IDNode extends Expression {
         return visitor.visit(this);
     }
 
-    public IdSymbol getSymbol() {
+    public Symbol getSymbol() {
         return symbol;
     }
 
@@ -25,7 +26,7 @@ public class IDNode extends Expression {
         return scope;
     }
 
-    public void setSymbol(IdSymbol symbol) {
+    public void setSymbol(Symbol symbol) {
         this.symbol = symbol;
     }
 

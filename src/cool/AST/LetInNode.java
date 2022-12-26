@@ -6,8 +6,8 @@ import org.antlr.v4.runtime.Token;
 import java.util.List;
 
 public class LetInNode extends Expression {
-    List<LetDefNode> args;
-    Expression body;
+    public List<LetDefNode> args;
+    public Expression body;
 
     LetInNode(Token token, List<LetDefNode> args, Expression body, ParserRuleContext ctx) {
         super(token, ctx);

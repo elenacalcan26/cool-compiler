@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class CaseBranchNode extends ASTNode {
-    IDNode name;
-    TypeNode type;
+    public IDNode name;
+    public TypeNode type;
     Expression body;
 
     CaseBranchNode(Token token,

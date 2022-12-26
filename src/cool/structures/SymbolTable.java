@@ -17,6 +17,13 @@ public class SymbolTable {
         semanticErrors = false;
         
         // TODO Populate global scope.
+
+        globals.add(TypeSymbol.INT);
+        globals.add(TypeSymbol.BOOL);
+        globals.add(TypeSymbol.STRING);
+        globals.add(TypeSymbol.IO);
+        globals.add(TypeSymbol.OBJECT);
+        globals.add(TypeSymbol.SELF_TYPE);
     }
     
     /**
