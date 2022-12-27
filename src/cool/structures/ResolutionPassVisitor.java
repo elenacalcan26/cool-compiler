@@ -635,7 +635,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        return null;
+        return new TypeSymbol(type.token.getText());
     }
 
     @Override
@@ -647,7 +647,12 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(BlockNode blockNode) {
-        blockNode.blockBody.forEach(expr -> expr.accept(this));
-        return null;
+        TypeSymbol last = null;
+
+        for (Expression e : blockNode.blockBody) {
+            last = e.accept(this);
+        }
+
+        return last;
     }
 }
