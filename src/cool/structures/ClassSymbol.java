@@ -45,4 +45,16 @@ public class ClassSymbol extends Symbol implements Scope {
     public Scope getParent() {
         return parent;
     }
+
+    public boolean isInheritedType(String symbol) {
+        if (this.name.equals(symbol)) {
+            return true;
+        }
+
+        if (parentClass != null) {
+            return parentClass.isInheritedType(symbol);
+        }
+
+        return false;
+    }
 }

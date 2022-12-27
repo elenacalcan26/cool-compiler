@@ -17,4 +17,5 @@ public class TypeSymbol extends Symbol {
         return sym.name.equals(INT.name) ||
                 sym.name.equals(BOOL.name) || sym.name.equals(STRING.name);
     }
+
 }

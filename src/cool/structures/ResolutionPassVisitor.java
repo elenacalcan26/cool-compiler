@@ -157,10 +157,62 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(AssignNode assignNode) {
-//        assignNode.name.accept(this);
-        assignNode.args.accept(this);
+        var id = assignNode.name;
 
-        return null;
+        if (id.token.getText().equals("self")) {
+            SymbolTable.error(
+                    id.ctx,
+                    id.token,
+                    "Cannot assign to self"
+            );
+
+
+            return null;
+        }
+
+        var idType = assignNode.name.accept(this);
+        var exprType = assignNode.args.accept(this);
+//        var clsSym = (ClassSymbol)SymbolTable.globals.lookup(exprType.name);
+//        var idCls = (ClassSymbol)SymbolTable.globals.lookup(idType.name);
+
+        if (idType == null || exprType == null) return null;
+
+        var idCls = SymbolTable.globals.lookup(idType.name);
+
+
+        if (idType != exprType) {
+
+            if (idCls instanceof ClassSymbol && ((ClassSymbol) idCls).isInheritedType(exprType.name)) {
+
+                SymbolTable.error(
+                        assignNode.ctx,
+                        assignNode.args.token,
+                        "Type " + exprType.name +
+                                " of assigned expression is incompatible with declared type " +
+                                idType.getName() + " of identifier " + id.token.getText()
+                );
+
+                return null;
+
+            }
+
+            // TODO: double check & modify
+            if (idCls instanceof TypeSymbol) {
+                SymbolTable.error(
+                        assignNode.ctx,
+                        assignNode.args.token,
+                        "Type " + exprType.name +
+                                " of assigned expression is incompatible with declared type " +
+                                idType.getName() + " of identifier " + id.token.getText()
+                );
+
+                return null;
+            }
+
+        }
+
+        return idType;
+
     }
 
     @Override
@@ -174,7 +226,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        // TODO: modifica asta plz, folosit pt askipui test 19
+        // TODO: modifica asta plz, folosit pt a skipui test 19
         if (!(id.getScope().getParent() instanceof ClassSymbol))
             return null;
 
@@ -270,7 +322,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         var rightType = mulDivNode.rightOp.accept(this);
 
 
-        if (leftType != null && leftType != TypeSymbol.INT) {
+        if (leftType != null && !leftType.name.equals(TypeSymbol.INT.name)) {
             SymbolTable.error(
                     mulDivNode.leftOp.ctx,
                     mulDivNode.leftOp.token,
@@ -281,7 +333,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        if (rightType != null && rightType != TypeSymbol.INT) {
+        if (rightType != null && !rightType.name.equals(TypeSymbol.INT.name)) {
             SymbolTable.error(
                     mulDivNode.rightOp.ctx,
                     mulDivNode.rightOp.token,
@@ -304,7 +356,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         var leftType = plusMinusNode.leftOp.accept(this);
         var rightType = plusMinusNode.rightOp.accept(this);
 
-        if (leftType != null && leftType != TypeSymbol.INT) {
+        if (leftType != null && !leftType.name.equals(TypeSymbol.INT.name)) {
             SymbolTable.error(
                     plusMinusNode.leftOp.ctx,
                     plusMinusNode.leftOp.token,
@@ -315,7 +367,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        if (rightType != null && rightType != TypeSymbol.INT) {
+        if (rightType != null && !rightType.name.equals(TypeSymbol.INT.name)) {
             SymbolTable.error(
                     plusMinusNode.rightOp.ctx,
                     plusMinusNode.rightOp.token,
@@ -337,7 +389,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
     public TypeSymbol visit(NegateNode negateNode) {
         var negOp = negateNode.rightOp.accept(this);
 
-        if (negOp != null && negOp != TypeSymbol.INT) {
+        if (negOp != null && !negOp.name.equals(TypeSymbol.INT.name)) {
             SymbolTable.error(
                     negateNode.rightOp.ctx,
                     negateNode.rightOp.token,

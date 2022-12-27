@@ -226,7 +226,7 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(AssignNode assignNode) {
-//        assignNode.name.accept(this);
+        assignNode.name.accept(this);
         assignNode.args.accept(this);
         return null;
     }
@@ -302,9 +302,7 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(ParenNode parenNode) {
-        // TODO: imi trece testul 7 daca las asta comentata aici
-        // must check this strange behaviour
-//        parenNode.expression.accept(this);
+        parenNode.expression.accept(this);
         return null;
     }
 
