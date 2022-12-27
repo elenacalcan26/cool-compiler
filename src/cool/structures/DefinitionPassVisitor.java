@@ -346,6 +346,8 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(WhileNode whileNode) {
+        whileNode.cond.accept(this);
+        whileNode.expression.accept(this);
         return null;
     }
 

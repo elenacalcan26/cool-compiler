@@ -166,7 +166,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                     "Cannot assign to self"
             );
 
-
             return null;
         }
 
@@ -195,6 +194,18 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 return null;
 
             }
+
+            if (exprType.name.equals(TypeSymbol.OBJECT.name)) {
+                SymbolTable.error(
+                        assignNode.ctx,
+                        assignNode.args.token,
+                        "Type " + exprType.name +
+                                " of assigned expression is incompatible with declared type " +
+                                idType.getName() + " of identifier " + id.token.getText()
+                );
+                return null;
+            }
+
 
             // TODO: double check & modify
             if (idCls instanceof TypeSymbol) {
@@ -464,7 +475,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         }
 
-
         return TypeSymbol.BOOL;
     }
 
@@ -524,7 +534,23 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(WhileNode whileNode) {
-        return null;
+        var condType = whileNode.cond.accept(this);
+        var blockType = whileNode.expression.accept(this);
+
+        if (condType == null) return null;
+
+        if (!condType.name.equals(TypeSymbol.BOOL.name)) {
+            SymbolTable.error(
+                    whileNode.cond.ctx,
+                    whileNode.cond.token,
+                    "While condition has type " + condType +
+                            " instead of Bool"
+            );
+
+            return TypeSymbol.OBJECT;
+        }
+
+        return blockType;
     }
 
     @Override

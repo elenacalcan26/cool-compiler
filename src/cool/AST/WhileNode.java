@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class WhileNode extends Expression {
-    Expression cond;
-    Expression expression;
+    public Expression cond;
+    public Expression expression;
 
     WhileNode(Token token,
               Expression cond,
