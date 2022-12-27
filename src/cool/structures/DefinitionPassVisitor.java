@@ -11,7 +11,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(ProgramNode programNode) {
-//        currentScope = SymbolTable.globals;
 
         List<ClassNode> classes = programNode.classNodeList;
         classes.forEach(classNode -> classNode.accept(this));
@@ -73,17 +72,17 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(IDNode idNode) {
-//        var symbol = (IdSymbol)currentScope.lookup(idNode.token.getText());
-//
-//        idNode.setScope(currentScope);
+        var symbol = (IdSymbol)currentScope.lookup(idNode.token.getText());
+
+        idNode.setScope(currentScope);
 //
 //        if (symbol == null) {
 //            SymbolTable.error("ceva err");
 //
 //            return null;
 //        }
-//
-//        idNode.setSymbol(symbol);
+
+        idNode.setSymbol(symbol);
 
         if (currentScope instanceof LetSymbol ) {
             if (currentScope.lookup(idNode.token.getText()) == null) {
@@ -185,6 +184,8 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
         }
 
 
+        symbol.type = new TypeSymbol(type.token.getText());
+
         varDefNode.name.setSymbol(symbol);
         varDefNode.name.setScope(currentScope);
 
@@ -201,13 +202,16 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
                             " with undefined type " + type.token.getText()
             );
             return null;
+
         }
+
+
 
         if (varDefNode.val != null) {
             varDefNode.val.accept(this);
         }
 
-            return null;
+        return null;
     }
 
     @Override
@@ -222,6 +226,8 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(AssignNode assignNode) {
+//        assignNode.name.accept(this);
+        assignNode.args.accept(this);
         return null;
     }
 
@@ -276,21 +282,29 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(MulDivNode mulDivNode) {
+        mulDivNode.leftOp.accept(this);
+        mulDivNode.rightOp.accept(this);
         return null;
     }
 
     @Override
     public Void visit(PlusMinusNode plusMinusNode) {
+        plusMinusNode.leftOp.accept(this);
+        plusMinusNode.rightOp.accept(this);
         return null;
     }
 
     @Override
     public Void visit(NegateNode negateNode) {
+        negateNode.rightOp.accept(this);
         return null;
     }
 
     @Override
     public Void visit(ParenNode parenNode) {
+        // TODO: imi trece testul 7 daca las asta comentata aici
+        // must check this strange behaviour
+//        parenNode.expression.accept(this);
         return null;
     }
 
@@ -352,6 +366,8 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
         }
 
 //        symbol.type = new TypeSymbol(type.token.getText());
+
+        symbol.type = new TypeSymbol(type.token.getText());
         id.setSymbol(symbol);
         id.setScope(currentScope);
 

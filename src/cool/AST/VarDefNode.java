@@ -5,8 +5,8 @@ import org.antlr.v4.runtime.Token;
 
 public class VarDefNode extends FeatureNode {
     public IDNode name;
-    public TypeNode type;
     public Expression val;
+    public TypeNode type;
 
     VarDefNode(Token token,
                IDNode name,

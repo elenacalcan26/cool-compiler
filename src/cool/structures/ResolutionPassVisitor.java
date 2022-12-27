@@ -67,14 +67,14 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         if (scope == null) return null;
         var idSymbol = (IdSymbol) scope.lookup(symbol.name);
 
-        if (idSymbol == null) {
-            SymbolTable.error(idNode.ctx, idNode.token, "ceva");
+//        if (idSymbol == null) {
+//            SymbolTable.error(idNode.ctx, idNode.token, "ceva");
+//
+//            return null;
+//        }
 
-            return null;
-        }
 
-
-        return null;
+        return idSymbol.type;
     }
 
     @Override
@@ -121,7 +121,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         // TODO: modify this plz
         //TODO: A good idea cred ca ar fi sa fac o trecere pt a determina mostenirile
-        // cred ca mai cool are sa fac un LCA :D
 
         if (parentScope.lookup(symbol.getName()) != null) {
             SymbolTable.error(
@@ -130,28 +129,37 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                     "Class " + currentScope + " redefines inherited attribute " + varDefNode.name.token.getText()
             );
 
-            varDefNode.name.setSymbol(null);
+//            varDefNode.name.setSymbol(null);
 
             return null;
         }
 
         var typeSymbol = varDefNode.type;
 
-        return null;
+
+        if (varDefNode.val != null)
+            varDefNode.val.accept(this);
+
+        // TODO: must check this again
+
+        return ((IdSymbol) symbol).type;
     }
 
     @Override
     public TypeSymbol visit(IntNode intNode) {
-        return null;
+        return TypeSymbol.INT;
     }
 
     @Override
     public TypeSymbol visit(BoolNode boolNode) {
-        return null;
+        return TypeSymbol.BOOL;
     }
 
     @Override
     public TypeSymbol visit(AssignNode assignNode) {
+//        assignNode.name.accept(this);
+        assignNode.args.accept(this);
+
         return null;
     }
 
@@ -170,7 +178,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         if (!(id.getScope().getParent() instanceof ClassSymbol))
             return null;
 
-        var parentScope =  (ClassSymbol)id.getScope().getParent();
+        var parentScope = (ClassSymbol)id.getScope().getParent();
 
 
         if (parentScope.parentClass != null) {
@@ -253,26 +261,102 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(StringNode stringNode) {
-        return null;
+        return TypeSymbol.STRING;
     }
 
     @Override
     public TypeSymbol visit(MulDivNode mulDivNode) {
-        return null;
+        var leftType = mulDivNode.leftOp.accept(this);
+        var rightType = mulDivNode.rightOp.accept(this);
+
+
+        if (leftType != null && leftType != TypeSymbol.INT) {
+            SymbolTable.error(
+                    mulDivNode.leftOp.ctx,
+                    mulDivNode.leftOp.token,
+                    "Operand of " + mulDivNode.token.getText() +
+                            " has type " + leftType +
+                            " instead of Int"
+            );
+            return null;
+        }
+
+        if (rightType != null && rightType != TypeSymbol.INT) {
+            SymbolTable.error(
+                    mulDivNode.rightOp.ctx,
+                    mulDivNode.rightOp.token,
+                    "Operand of " + mulDivNode.rightOp.token.getText() +
+                            " has type " + rightType +
+                            " instead of Int"
+            );
+            return null;
+        }
+
+        if (leftType == null || rightType == null) {
+            return null;
+        }
+
+        return TypeSymbol.INT;
     }
 
     @Override
     public TypeSymbol visit(PlusMinusNode plusMinusNode) {
-        return null;
+        var leftType = plusMinusNode.leftOp.accept(this);
+        var rightType = plusMinusNode.rightOp.accept(this);
+
+        if (leftType != null && leftType != TypeSymbol.INT) {
+            SymbolTable.error(
+                    plusMinusNode.leftOp.ctx,
+                    plusMinusNode.leftOp.token,
+                    "Operand of " + plusMinusNode.token.getText() +
+                            " has type " + leftType +
+                            " instead of Int"
+            );
+            return null;
+        }
+
+        if (rightType != null && rightType != TypeSymbol.INT) {
+            SymbolTable.error(
+                    plusMinusNode.rightOp.ctx,
+                    plusMinusNode.rightOp.token,
+                    "Operand of " + plusMinusNode.token.getText() +
+                            " has type " + rightType +
+                            " instead of Int"
+            );
+            return null;
+        }
+
+        if (leftType == null || rightType == null) {
+            return null;
+        }
+
+        return TypeSymbol.INT;
     }
 
     @Override
     public TypeSymbol visit(NegateNode negateNode) {
-        return null;
+        var negOp = negateNode.rightOp.accept(this);
+
+        if (negOp != null && negOp != TypeSymbol.INT) {
+            SymbolTable.error(
+                    negateNode.rightOp.ctx,
+                    negateNode.rightOp.token,
+                    "Operand of " + negateNode.token.getText() +
+                            " has type " + negOp +
+                            " instead of Int"
+            );
+
+            return null;
+        }
+
+        if (negOp == null) return null;
+
+        return TypeSymbol.INT;
     }
 
     @Override
     public TypeSymbol visit(ParenNode parenNode) {
+        parenNode.expression.accept(this);
         return null;
     }
 

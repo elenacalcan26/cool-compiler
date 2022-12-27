@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class PlusMinusNode extends Expression {
-    Expression leftOp;
-    Expression rightOp;
+    public Expression leftOp;
+    public Expression rightOp;
 
     PlusMinusNode(Token token, Expression leftOp, Expression rightOp, ParserRuleContext ctx) {
         super(token, ctx);

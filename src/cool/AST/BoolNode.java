@@ -3,7 +3,7 @@ package cool.AST;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
-public class BoolNode extends ASTNode {
+public class BoolNode extends Expression {
     BoolNode(Token token, ParserRuleContext ctx) {
         super(token, ctx);
     }

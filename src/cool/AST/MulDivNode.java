@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class MulDivNode extends Expression {
-    Expression leftOp;
-    Expression rightOp;
+    public Expression leftOp;
+    public Expression rightOp;
 
     MulDivNode(Token token,
                Expression leftOp,

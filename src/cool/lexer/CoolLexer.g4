@@ -34,36 +34,12 @@ NEW : 'new';
 OF : 'of';
 NOT : 'not';
 
-/* simboluri */
+BOOL: 'true' | 'false';
 
-LPAREN : '(';
-RPAREN : ')';
-LBRACE : '{';
-RBRACE : '}';
-COLON : ':';
-SEMICOLON : ';';
-COMMA : ',';
-DOT : '.';
-NEG : '~';
-ASSIGN : '<-';
-A_ROUND : '@';
-IMPLICATION : '=>';
 
-/* operatori aritmetici */
-PLUS : '+';
-MINUS : '-';
-MUL : '*';
-DIV : '/';
-
-/* operatori comparatie */
-EQUAL : '=';
-LT : '<';
-LE : '<=';
-
-fragment DIGIT : [0-9];
 fragment LETTER : [a-zA-Z];
 fragment UPPER_LETTER : [A-Z];
-fragment CLASS_NAME : UPPER_LETTER (LETTER | DIGIT)*;
+fragment CLASS_NAME : UPPER_LETTER (LETTER | DIGIT | '_')*;
 
 /* tip de data */
 
@@ -72,13 +48,13 @@ TYPE : 'Int' | 'Bool' | 'Float' | 'Object' | 'SELF_TYPE' | CLASS_NAME;
 /* identificator */
 ID : (LETTER | '_')(LETTER | '_' | DIGIT)*;
 
+fragment DIGIT : [0-9];
 INT : DIGIT+;
 
 fragment DIGITS : DIGIT+;
 fragment EXPONENT : 'e' ('+' | '-')? DIGITS;
 FLOAT : (DIGITS ('.' DIGITS?)? | '.' DIGITS) EXPONENT?;
 
-BOOL : 'true' | 'false';
 STRING : '"' ('\\' NEW_LINE | .)*? ( '"'
         | EOF { raiseError(" EOF in string constant "); }
         | NEW_LINE { raiseError(" Unterminated string constant "); })
@@ -126,6 +102,33 @@ STRING : '"' ('\\' NEW_LINE | .)*? ( '"'
         setText(newStr.toString());
     }
     ;
+
+
+/* simboluri */
+
+LPAREN : '(';
+RPAREN : ')';
+LBRACE : '{';
+RBRACE : '}';
+COLON : ':';
+SEMICOLON : ';';
+COMMA : ',';
+DOT : '.';
+NEG : '~';
+ASSIGN : '<-';
+A_ROUND : '@';
+IMPLICATION : '=>';
+
+/* operatori aritmetici */
+PLUS : '+';
+MINUS : '-';
+MUL : '*';
+DIV : '/';
+
+/* operatori comparatie */
+EQUAL : '=';
+LT : '<';
+LE : '<=';
 
 fragment NEW_LINE : '\r'? '\n';
 

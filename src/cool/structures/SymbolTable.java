@@ -2,10 +2,10 @@ package cool.structures;
 
 import java.io.File;
 
+import cool.parser.CoolParser;
 import org.antlr.v4.runtime.*;
 
 import cool.compiler.Compiler;
-import cool.parser.CoolParser;
 
 public class SymbolTable {
     public static Scope globals;

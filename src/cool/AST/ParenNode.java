@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class ParenNode extends Expression {
-    Expression expression;
+    public Expression expression;
 
     ParenNode(Token token, Expression expression, ParserRuleContext ctx) {
         super(token, ctx);
