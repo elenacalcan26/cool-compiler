@@ -180,7 +180,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         var idCls = SymbolTable.globals.lookup(idType.name);
 
 
-        if (idType != exprType) {
+        if (!idType.name.equals(exprType.name)) {
 
             if (idCls instanceof ClassSymbol && ((ClassSymbol) idCls).isInheritedType(exprType.name)) {
 
@@ -489,12 +489,22 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(NewNode newNode) {
-        return null;
+        var typeSymbol = SymbolTable.globals.lookup(newNode.type.token.getText());
+
+        if (typeSymbol == null) {
+            SymbolTable.error(
+                    newNode.type.ctx,
+                    newNode.type.token,
+                    "new is used with undefined type " + newNode.type.token.getText()
+            );
+        }
+
+        return new TypeSymbol(newNode.type.token.getText());
     }
 
     @Override
     public TypeSymbol visit(IsVoidNode isVoidNode) {
-        return null;
+        return TypeSymbol.BOOL;
     }
 
     @Override

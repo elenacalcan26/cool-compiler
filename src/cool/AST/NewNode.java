@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class NewNode extends Expression {
-    TypeNode type;
+    public TypeNode type;
 
     NewNode(Token token, TypeNode type, ParserRuleContext ctx) {
         super(token, ctx);
