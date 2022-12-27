@@ -67,13 +67,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         if (scope == null) return null;
         var idSymbol = (IdSymbol) scope.lookup(symbol.name);
 
-//        if (idSymbol == null) {
-//            SymbolTable.error(idNode.ctx, idNode.token, "ceva");
-//
-//            return null;
-//        }
-
-
         return idSymbol.type;
     }
 
@@ -101,9 +94,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        // TODO: i should set TypeSymbol here ??
-
-        return null;
+        return new TypeSymbol(type.token.getText());
     }
 
 
@@ -310,12 +301,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         }
 
-//        if (parentScope.parentClass != null) {
-//            System.out.println(id.getScope()+ " -> " + parentScope + " -> " + parentScope.parentClass.getName());
-//        }
-        //                System.out.println(inheritedClass.lookup(type.token.getText()));
-//                System.out.println(type.token.getText() + " -> " + overriddenMethodType.type.getName());
-
         funcDefNode.funcParams.forEach(funcParam -> funcParam.accept(this));
         funcDefNode.body.accept(this);
 
@@ -419,8 +404,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(ParenNode parenNode) {
-        parenNode.expression.accept(this);
-        return null;
+        return parenNode.expression.accept(this);
     }
 
     @Override
@@ -606,15 +590,48 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        return null;
+        if (letDefNode.val != null) {
+            var exprType = letDefNode.val.accept(this);
+            var currentType = SymbolTable.globals.lookup(((IdSymbol)symbol).type.name);
+
+            if (exprType == null) return null;
+
+            if (currentType instanceof ClassSymbol
+                    && ((ClassSymbol) currentType).isInheritedType(exprType.name)
+                    && !currentType.name.equals(exprType.name)) {
+                SymbolTable.error(
+                        letDefNode.val.ctx,
+                        letDefNode.val.token,
+                        "Type " + exprType +
+                                " of initialization expression of identifier " +
+                                id.token.getText() +
+                                " is incompatible with declared type " + currentType
+                );
+
+                return null;
+            }
+
+            if ((currentType instanceof TypeSymbol && !((TypeSymbol) currentType).name.equals(exprType.name))) {
+                SymbolTable.error(
+                        letDefNode.val.ctx,
+                        letDefNode.val.token,
+                        "Type " + exprType +
+                                " of initialization expression of identifier " +
+                                id.token.getText() +
+                                " is incompatible with declared type " + currentType
+                );
+
+                return null;
+            }
+        }
+
+        return new TypeSymbol(type.token.getText());
     }
 
     @Override
     public TypeSymbol visit(LetInNode letInNode) {
         letInNode.args.forEach(arg -> arg.accept(this));
-        letInNode.body.accept(this);
-
-        return null;
+        return letInNode.body.accept(this);
     }
 
     @Override
