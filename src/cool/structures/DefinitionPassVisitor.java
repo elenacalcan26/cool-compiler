@@ -185,6 +185,7 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
 
         symbol.type = new TypeSymbol(type.token.getText());
+//        symbol.type = type;
 
         varDefNode.name.setSymbol(symbol);
         varDefNode.name.setScope(currentScope);
@@ -193,18 +194,17 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
         //TODO: maybe i should this code block move to ResolutionPassVisitor
         // forward references can appear here :D
-
-        if (! (varType instanceof TypeSymbol)) {
-            SymbolTable.error(
-                    type.ctx,
-                    type.token,
-                    "Class " + ((ClassSymbol)currentScope).getName() + " has attribute " + id.token.getText() +
-                            " with undefined type " + type.token.getText()
-            );
-            return null;
-
-        }
-
+//
+//        if (! (varType instanceof TypeSymbol)) {
+//            SymbolTable.error(
+//                    type.ctx,
+//                    type.token,
+//                    "Class " + ((ClassSymbol)currentScope).getName() + " has attribute " + id.token.getText() +
+//                            " with undefined type " + type.token.getText()
+//            );
+//            return null;
+//
+//        }
 
 
         if (varDefNode.val != null) {
@@ -310,11 +310,14 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
     @Override
     public Void visit(ComparisonNode comparisonNode) {
+        comparisonNode.leftOp.accept(this);
+        comparisonNode.rightOp.accept(this);
         return null;
     }
 
     @Override
     public Void visit(NotNode notNode) {
+        notNode.expression.accept(this);
         return null;
     }
 

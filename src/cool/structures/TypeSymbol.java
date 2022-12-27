@@ -12,4 +12,9 @@ public class TypeSymbol extends Symbol {
     public static final TypeSymbol OBJECT = new TypeSymbol("Object");
     public static final TypeSymbol IO = new TypeSymbol("IO");
     public static final TypeSymbol SELF_TYPE = new TypeSymbol("SELF_TYPE");
+
+    public static boolean isBasicDataType(TypeSymbol sym) {
+        return sym.name.equals(INT.name) ||
+                sym.name.equals(BOOL.name) || sym.name.equals(STRING.name);
+    }
 }

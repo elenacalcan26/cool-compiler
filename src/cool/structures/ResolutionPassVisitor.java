@@ -362,12 +362,77 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(ComparisonNode comparisonNode) {
-        return null;
+        var leftType = comparisonNode.leftOp.accept(this);
+        var rightType = comparisonNode.rightOp.accept(this);
+
+        if (comparisonNode.token.getText().equals("=")) {
+
+            if (!(leftType.name.equals(rightType.name)) &&
+                    (TypeSymbol.isBasicDataType(leftType) ||
+                    TypeSymbol.isBasicDataType(rightType))) {
+
+                SymbolTable.error(
+                        comparisonNode.ctx,
+                        comparisonNode.token,
+                        "Cannot compare " + leftType + " with " + rightType
+                );
+
+
+                return null;
+            }
+
+
+        } else {
+
+            if (leftType.name.equals(TypeSymbol.INT.name) && !rightType.name.equals(TypeSymbol.INT.name)) {
+
+                SymbolTable.error(
+                        comparisonNode.rightOp.ctx,
+                        comparisonNode.rightOp.token,
+                        "Operand of " + comparisonNode.token.getText() +
+                                " has type " + rightType +
+                                " instead of Int"
+                );
+
+                return null;
+            }
+
+            if (!leftType.name.equals(TypeSymbol.INT.name) && rightType.name.equals(TypeSymbol.INT.name)) {
+
+                SymbolTable.error(
+                        comparisonNode.leftOp.ctx,
+                        comparisonNode.leftOp.token,
+                        "Operand of " + comparisonNode.token.getText() +
+                                " has type " + leftType +
+                                " instead of Int"
+                );
+
+                return null;
+            }
+
+        }
+
+
+        return TypeSymbol.BOOL;
     }
 
     @Override
     public TypeSymbol visit(NotNode notNode) {
-        return null;
+        var type = notNode.expression.accept(this);
+
+        if (type == null) return null;
+
+        if (!type.name.equals(TypeSymbol.BOOL.name)) {
+            SymbolTable.error(
+                    notNode.expression.ctx,
+                    notNode.expression.token,
+                    "Operand of not has type " + type + " instead of Bool"
+            );
+
+            return null;
+        }
+
+        return TypeSymbol.BOOL;
     }
 
     @Override
