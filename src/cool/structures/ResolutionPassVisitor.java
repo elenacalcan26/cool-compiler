@@ -184,7 +184,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             if (idCls instanceof ClassSymbol && ((ClassSymbol) idCls).isInheritedType(exprType.name)) {
 
                 SymbolTable.error(
-                        assignNode.ctx,
+                        assignNode.args.ctx,
                         assignNode.args.token,
                         "Type " + exprType.name +
                                 " of assigned expression is incompatible with declared type " +
@@ -197,7 +197,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
             if (exprType.name.equals(TypeSymbol.OBJECT.name)) {
                 SymbolTable.error(
-                        assignNode.ctx,
+                        assignNode.args.ctx,
                         assignNode.args.token,
                         "Type " + exprType.name +
                                 " of assigned expression is incompatible with declared type " +
@@ -210,7 +210,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             // TODO: double check & modify
             if (idCls instanceof TypeSymbol) {
                 SymbolTable.error(
-                        assignNode.ctx,
+                        assignNode.args.ctx,
                         assignNode.args.token,
                         "Type " + exprType.name +
                                 " of assigned expression is incompatible with declared type " +
@@ -507,6 +507,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                     newNode.type.token,
                     "new is used with undefined type " + newNode.type.token.getText()
             );
+            return null;
         }
 
         return new TypeSymbol(newNode.type.token.getText());
@@ -529,7 +530,38 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
     @Override
     public TypeSymbol visit(IfNode ifNode) {
-        return null;
+        var condType = ifNode.cond.accept(this);
+        var thenBranchType = ifNode.thenBranch.accept(this);
+        var elseBranchType = ifNode.elseBranch.accept(this);
+
+        if (condType == null || thenBranchType == null || elseBranchType == null) return null;
+
+        if (!condType.name.equals(TypeSymbol.BOOL.name)) {
+            SymbolTable.error(
+                    ifNode.cond.ctx,
+                    ifNode.cond.token,
+                    "If condition has type " + condType + " instead of Bool"
+            );
+
+            return TypeSymbol.OBJECT;
+        }
+
+        var clsThen = SymbolTable.globals.lookup(thenBranchType.name);
+        var clsElse = SymbolTable.globals.lookup(elseBranchType.name);
+
+        if (clsThen instanceof ClassSymbol && ((ClassSymbol)clsThen).isInheritedType(clsElse.name)) {
+            return new TypeSymbol(clsElse.name);
+        } else if (clsElse instanceof ClassSymbol && ((ClassSymbol)clsElse).isInheritedType(clsThen.name)) {
+            return new TypeSymbol(clsThen.name);
+        }
+
+        //TODO: LCA
+
+        if (thenBranchType.name.equals(elseBranchType.name)) {
+            return thenBranchType;
+        }
+
+        return TypeSymbol.OBJECT;
     }
 
     @Override
