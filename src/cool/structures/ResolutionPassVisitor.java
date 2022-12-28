@@ -49,6 +49,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             }
 
             // TODO: inheritance cycle
+
+
         }
 
 
@@ -128,8 +130,42 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         var typeSymbol = varDefNode.type;
 
 
-        if (varDefNode.val != null)
-            varDefNode.val.accept(this);
+        if (varDefNode.val != null) {
+
+            var exprType = varDefNode.val.accept(this);
+
+            if (exprType == null) return null;
+
+//            var exprTypeCls = SymbolTable.globals.lookup(exprType.name);
+            var clsTypeSymbol = SymbolTable.globals.lookup(typeSymbol.token.getText());
+
+            if (clsTypeSymbol instanceof ClassSymbol
+                    && ((ClassSymbol) clsTypeSymbol).isInheritedType(exprType.name)) {
+                SymbolTable.error(
+                        varDefNode.val.ctx,
+                        varDefNode.val.token,
+                        "Type " + exprType.name +
+                                " of initialization expression of attribute " + varDefNode.name.token.getText() +
+                                " is incompatible with declared type " + typeSymbol.token.getText()
+                );
+                return null;
+            }
+
+
+            if (clsTypeSymbol instanceof TypeSymbol
+                    && !typeSymbol.token.getText().equals(exprType.name)) {
+                SymbolTable.error(
+                        varDefNode.val.ctx,
+                        varDefNode.val.token,
+                        "Type " + exprType.name +
+                                " of initialization expression of attribute " + varDefNode.name.token.getText() +
+                                " is incompatible with declared type " + typeSymbol.token.getText()
+                );
+
+                return null;
+            }
+        }
+
 
         // TODO: must check this again
 

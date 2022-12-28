@@ -47,14 +47,14 @@ public class ClassSymbol extends Symbol implements Scope {
     }
 
     public boolean isInheritedType(String symbol) {
-        if (this.name.equals(symbol)) {
+        if (parentClass == null) return false;
+
+        if (parentClass.name.equals(symbol)) {
             return true;
         }
 
-        if (parentClass != null) {
-            return parentClass.isInheritedType(symbol);
-        }
-
-        return false;
+        return parentClass.isInheritedType(symbol);
     }
+
+
 }
