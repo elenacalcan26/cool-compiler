@@ -48,11 +48,39 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 return null;
             }
 
-            // TODO: inheritance cycle
+            // TODO: inheritance cycle, must move this to ClassSymbol.java
+            var parentCls = SymbolTable.globals.lookup(symbol.parentClass.getName());
+            boolean found = true;
 
+            if ((parentCls != null) && (parentCls instanceof ClassSymbol)) {
+                parentCls = (ClassSymbol) parentCls;
+
+                while (!parentCls.name.equals(symbol.name)) {
+                    if (((ClassSymbol) parentCls).parentClass == null) {
+                        found = false;
+                        break;
+                    }
+
+                    parentCls = (ClassSymbol) SymbolTable.globals.lookup(((ClassSymbol) parentCls).parentClass.name);
+
+                    if (parentCls == null) {
+                        found = false;
+                        break;
+                    };
+
+                }
+
+                if (found) {
+                    SymbolTable.error(
+                            classNode.type.ctx,
+                            classNode.type.token,
+                            "Inheritance cycle for class " + symbol.name);
+                    return null;
+                }
+
+            }
 
         }
-
 
         classNode.features.forEach(featureNode -> featureNode.accept(this));
 

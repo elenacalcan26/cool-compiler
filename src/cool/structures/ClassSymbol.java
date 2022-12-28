@@ -56,5 +56,4 @@ public class ClassSymbol extends Symbol implements Scope {
         return parentClass.isInheritedType(symbol);
     }
 
-
 }
