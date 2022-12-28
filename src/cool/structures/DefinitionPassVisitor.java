@@ -26,7 +26,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
     @Override
     public Void visit(ClassNode classNode) {
 
-        // TODO putin ciudat aici ca B ar trebui sa fie mostenit de A care este definit mai jos
         var symbol = new ClassSymbol(classNode.type.token.getText(), currentScope);
 
         if (classNode.type.token.getText().equals("SELF_TYPE")) {
@@ -49,22 +48,20 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
         // se ataseaza simbolul
         classNode.symbol = symbol;
-//        currentScope.add(symbol);
-        // TODO ,maybe ar trebui sa am un scope pt clasa, dar nu pre vad de ce sau ca la functii idk
 
-        // TODO: check if clas is inherited
+        // check if class is inherited
 
         if (classNode.parent.token != null) {
+            // TODO: o mica-mare problema aici, deoarece se face o noua referinta catre clasa parinte
+            // care nu o sa continta simbolurile clasei parinte mai pe urma
             classNode.symbol.parentClass = new ClassSymbol(classNode.parent.token.getText(), currentScope);
         }
 
-//        currentScope.add(symbol);
         SymbolTable.globals.add(symbol);
         currentScope = symbol;
 
         classNode.features.forEach(featureNode -> featureNode.accept(this));
 
-        //
         currentScope = symbol.getParent();
 
         return null;
@@ -75,13 +72,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
         var symbol = (IdSymbol)currentScope.lookup(idNode.token.getText());
 
         idNode.setScope(currentScope);
-//
-//        if (symbol == null) {
-//            SymbolTable.error("ceva err");
-//
-//            return null;
-//        }
-
         idNode.setSymbol(symbol);
 
         if (currentScope instanceof LetSymbol ) {
@@ -121,7 +111,7 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
                     type.ctx,
                     type.token,
                     "Method " + currentScope + " of class " + currentScope.getParent() +
-                        " has formal parameter " + id.token.getText() +
+                            " has formal parameter " + id.token.getText() +
                             " with illegal type SELF_TYPE"
             );
 
@@ -140,13 +130,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
             return null;
         }
 
-        // TODO: check this in ResolutionPassVisitor
-        // here can appear forward references
-        // ex: f(smt : C) : Int ... blah blah .. class C blah, blah
-        // also, this is a type checking and i think that is nice to
-        // do all this type checking in ResolutionPassVisitor
-
-
         symbol.type = new TypeSymbol(type.token.getText());
         id.setSymbol(symbol);
         id.setScope(currentScope);
@@ -160,7 +143,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
         var symbol = new IdSymbol(varDefNode.name.token.getText());
         var id = varDefNode.name;
         var type = varDefNode.type;
-//        Scope currentClass = currentScope;
 
         if (id.token.getText().equals("self")) {
 
@@ -177,35 +159,16 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
             SymbolTable.error(
                     id.ctx,
                     id.token,
-                    "Class " + ((ClassSymbol)currentScope).getName() + " redefines attribute " + symbol.getName()
+                    "Class " + ((ClassSymbol)currentScope).getName() +
+                            " redefines attribute " + symbol.getName()
             );
 
             return null;
         }
 
-
         symbol.type = new TypeSymbol(type.token.getText());
-//        symbol.type = type;
-
         varDefNode.name.setSymbol(symbol);
         varDefNode.name.setScope(currentScope);
-
-        var varType = currentScope.lookup(type.token.getText());
-
-        //TODO: maybe i should this code block move to ResolutionPassVisitor
-        // forward references can appear here :D
-//
-//        if (! (varType instanceof TypeSymbol)) {
-//            SymbolTable.error(
-//                    type.ctx,
-//                    type.token,
-//                    "Class " + ((ClassSymbol)currentScope).getName() + " has attribute " + id.token.getText() +
-//                            " with undefined type " + type.token.getText()
-//            );
-//            return null;
-//
-//        }
-
 
         if (varDefNode.val != null) {
             varDefNode.val.accept(this);
@@ -238,9 +201,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
 
         var funcSymbol = new MethodSymbol(id.token.getText(), currentScope);
 
-
-//        currentScope = funcSymbol;
-
         var lookedSymbol = currentScope.lookup(funcSymbol.name);
 
         if (lookedSymbol instanceof MethodSymbol) {
@@ -253,9 +213,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
             return null;
         }
 
-        // ar trebui sa adaug simbolul
-        currentScope.add(funcSymbol);
-
         funcSymbol.type = new TypeSymbol(type.token.getText());
 
         currentScope.add(funcSymbol);
@@ -263,11 +220,7 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
         id.setSymbol(funcSymbol);
         id.setScope(currentScope);
 
-
-//        var funcType = new TypeSymbol(type.token.getText());
-
         funcDefNode.funcParams.forEach(funcParam -> funcParam.accept(this));
-
         funcDefNode.body.accept(this);
 
         currentScope = currentScope.getParent();
@@ -371,8 +324,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
             return null;
         }
 
-//        symbol.type = new TypeSymbol(type.token.getText());
-
         symbol.type = new TypeSymbol(type.token.getText());
         id.setSymbol(symbol);
         id.setScope(currentScope);
@@ -391,7 +342,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
     public Void visit(LetInNode letInNode) {
         var letSymbol = new LetSymbol(currentScope);
         letInNode.symbol = letSymbol;
-//        currentScope.add()
         currentScope = letSymbol;
 
         letInNode.args.forEach(arg -> arg.accept(this));
@@ -430,9 +380,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
             return null;
         }
 
-        // TODO: must resolve type ??
-
-
 
         return null;
     }
@@ -441,7 +388,6 @@ public class DefinitionPassVisitor implements ASTVisitor<Void> {
     public Void visit(CaseNode caseNode) {
         caseNode.var.accept(this);
         caseNode.branches.forEach(branch -> branch.accept(this));
-
         return null;
     }
 
