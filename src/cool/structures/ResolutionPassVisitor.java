@@ -3,7 +3,6 @@ package cool.structures;
 import cool.AST.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
     @Override
@@ -340,7 +339,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                     return null;
                 }
 
-                // TODO: mai cool era daca ma ducea recursiv :D
                 for (int i = 0; i < overriddenFormals.size(); i++) {
 
                     var currFormalType = currentFuncFormals.get(i).type;
@@ -366,9 +364,42 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         }
 
         funcDefNode.funcParams.forEach(funcParam -> funcParam.accept(this));
-        funcDefNode.body.accept(this);
+        var bodyType = funcDefNode.body.accept(this);
 
-        return null;
+        if (bodyType == null) return null;
+
+        // TODO: check retType vs bodyType
+
+        var clsReturnType = SymbolTable.globals.lookup(funcDefNode.funcType.token.getText());
+        var clsBodyType = SymbolTable.globals.lookup(bodyType.name);
+
+
+        if (clsReturnType instanceof ClassSymbol &&
+                ((ClassSymbol) clsReturnType).isInheritedType(clsBodyType.name)) {
+            SymbolTable.error(
+                    funcDefNode.body.ctx,
+                    funcDefNode.body.token,
+                    "Type " + bodyType + " of the body of method " + funcDefNode.funcName.token.getText() +
+                            " is incompatible with declared return type " + funcDefNode.funcType.token.getText()
+            );
+            return null;
+        }
+
+        if (clsReturnType instanceof TypeSymbol &&
+                !clsBodyType.name.equals(clsReturnType.name) &&
+                !clsReturnType.name.equals("Object")) {
+            // TODO: Obs! Int mosteneste Object, ar trebui sa pun in cod asta
+            SymbolTable.error(
+                    funcDefNode.body.ctx,
+                    funcDefNode.body.token,
+                    "Type " + bodyType + " of the body of method " + funcDefNode.funcName.token.getText() +
+                            " is incompatible with declared return type " + funcDefNode.funcType.token.getText()
+            );
+
+            return null;
+        }
+
+        return new TypeSymbol(funcDefNode.funcType.token.getText());
     }
 
     @Override
