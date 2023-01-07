@@ -1,14 +1,19 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class VarDefNode extends FeatureNode {
-    IDNode name;
-    TypeNode type;
-    Expression val;
+    public IDNode name;
+    public Expression val;
+    public TypeNode type;
 
-    VarDefNode(Token token, IDNode name, TypeNode type, Expression val) {
-        super(token);
+    VarDefNode(Token token,
+               IDNode name,
+               TypeNode type,
+               Expression val,
+               ParserRuleContext ctx) {
+        super(token, ctx);
         this.name = name;
         this.type = type;
         this.val = val;

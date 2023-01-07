@@ -1,17 +1,19 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class IfNode extends Expression {
-    Expression cond;
-    Expression thenBranch;
-    Expression elseBranch;
+    public Expression cond;
+    public Expression thenBranch;
+    public Expression elseBranch;
 
     IfNode(Token token,
            Expression cond,
            Expression thenBranch,
-           Expression elseBranch) {
-        super(token);
+           Expression elseBranch,
+           ParserRuleContext ctx) {
+        super(token, ctx);
         this.cond = cond;
         this.thenBranch = thenBranch;
         this.elseBranch = elseBranch;

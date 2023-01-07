@@ -1,12 +1,13 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class NotNode extends Expression {
-    Expression expression;
+    public Expression expression;
 
-    NotNode(Token token, Expression expression) {
-        super(token);
+    NotNode(Token token, Expression expression, ParserRuleContext ctx) {
+        super(token, ctx);
         this.expression = expression;
     }
 

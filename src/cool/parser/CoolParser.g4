@@ -36,17 +36,17 @@ expr
     | CASE var=expr OF (branches+=case_branch)* ESAC                # case
     | op=NEW type=TYPE                  # new
     | op=ISVOID expression=expr                # isvoid
+    | LPAREN expression=expr RPAREN        # paren
+    | op=NEG rightOp=expr      # negate
     | leftOp=expr op=(MUL | DIV) rightOp=expr # mulDiv
     | leftOp=expr op=(PLUS | MINUS) rightOp=expr # plusMinus
-    | op=NEG rightOp=expr      # negate
     | leftOp=expr op=(LT | LE | EQUAL) rightOp=expr    # comparison
     | op=NOT expression=expr                        # not
-    | LPAREN expression=expr RPAREN        # paren
+    | name=ID op=ASSIGN args=expr   # assign
     | ID    # id
     | INT   # int
-    | STRING # string
     | BOOL  # bool
-    | name=ID op=ASSIGN args=expr   # assign
+    | STRING # string
     ;
 
 let_def : name=ID COLON type=TYPE (ASSIGN val=expr)?;

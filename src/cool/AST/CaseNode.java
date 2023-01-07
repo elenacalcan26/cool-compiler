@@ -1,15 +1,19 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 import java.util.List;
 
 public class CaseNode extends Expression {
-    Expression var;
-    List<CaseBranchNode> branches;
+    public Expression var;
+    public List<CaseBranchNode> branches;
 
-    CaseNode(Token token, Expression var, List<CaseBranchNode> branches) {
-        super(token);
+    CaseNode(Token token,
+             Expression var,
+             List<CaseBranchNode> branches,
+             ParserRuleContext ctx) {
+        super(token, ctx);
         this.var = var;
         this.branches = branches;
     }

@@ -1,17 +1,20 @@
 package cool.AST;
 
+import cool.structures.ClassSymbol;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class ClassNode extends ASTNode {
-    TypeNode type;
-    TypeNode parent;
-    List<FeatureNode> features;
+    public TypeNode type;
+    public TypeNode parent;
+    public List<FeatureNode> features;
 
-    ClassNode(Token token, TypeNode type, TypeNode parent, List<FeatureNode> features) {
-        super(token);
+    public ClassSymbol symbol;
+
+    ClassNode(Token token, TypeNode type, TypeNode parent, List<FeatureNode> features, ParserRuleContext ctx) {
+        super(token, ctx);
         this.type = type;
         this.parent = parent;
         this.features = features;

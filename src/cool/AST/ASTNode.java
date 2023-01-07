@@ -6,9 +6,13 @@ import org.antlr.v4.runtime.Token;
 import java.util.*;
 
 public abstract class ASTNode {
-    Token token;
-    ASTNode(Token token) {
+    public Token token;
+    public ParserRuleContext ctx;
+
+    ASTNode(Token token, ParserRuleContext ctx) {
         this.token = token;
+        this.ctx = ctx;
+
     }
 
     public <T> T accept(ASTVisitor<T> visitor) {

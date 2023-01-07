@@ -1,12 +1,13 @@
 package cool.AST;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class NegateNode extends Expression {
-    Expression rightOp;
+    public Expression rightOp;
 
-    NegateNode(Token token, Expression rightOp) {
-        super(token);
+    NegateNode(Token token, Expression rightOp, ParserRuleContext ctx) {
+        super(token, ctx);
         this.rightOp = rightOp;
     }
 
