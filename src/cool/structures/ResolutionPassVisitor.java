@@ -162,6 +162,9 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
             if (clsTypeSymbol instanceof ClassSymbol
                     && ((ClassSymbol) clsTypeSymbol).isInheritedType(exprType.name)) {
+
+                // obiect al unei clase ii se atribuie o valoarea care este o instanta a clasei parinte
+
                 SymbolTable.error(
                         varDefNode.val.ctx,
                         varDefNode.val.token,
@@ -224,7 +227,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         if (!idType.name.equals(exprType.name)) {
 
-            if (idCls instanceof ClassSymbol && ((ClassSymbol) idCls).isInheritedType(exprType.name)) {
+            if (idCls instanceof ClassSymbol &&
+                    ((ClassSymbol) idCls).isInheritedType(exprType.name)) {
 
                 SymbolTable.error(
                         assignNode.args.ctx,
@@ -289,16 +293,15 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
                 // se verifica daca tipurile de retur a functiei a fost suprascris sau nu
 
-                // TODO: change variable name pls
-                var overriddenMethodType = (MethodSymbol)inheritedClass.lookup(symbol.getName());
+                var overriddenMethod = (MethodSymbol)inheritedClass.lookup(symbol.getName());
 
-                if (!type.token.getText().equals(overriddenMethodType.type.getName())) {
+                if (!type.token.getText().equals(overriddenMethod.type.getName())) {
                     SymbolTable.error(
                             type.ctx,
                             type.token,
                             "Class " + parentScope + " overrides method " + id.token.getText() +
                                     " but changes return type from " +
-                                    overriddenMethodType.type.getName() + " to " +
+                                    overriddenMethod.type.getName() + " to " +
                                     type.token.getText()
                     );
 
@@ -306,7 +309,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 }
 
                 var currentFuncFormals = funcDefNode.funcParams;
-                var overriddenFormals = new ArrayList<Symbol>(overriddenMethodType.symbols.values());
+                var overriddenFormals = new ArrayList<Symbol>(overriddenMethod.symbols.values());
 
                 if (currentFuncFormals.size() != overriddenFormals.size()) {
                     // metoda supradefinta cu un numar diferit de parametrii formali
@@ -314,7 +317,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                     SymbolTable.error(
                             funcDefNode.ctx,
                             funcDefNode.token,
-                            "Class " + parentScope + " overrides method " + id.token.getText() +
+                            "Class " + parentScope +
+                                    " overrides method " + id.token.getText() +
                                     " with different number of formal parameters"
                     );
 
@@ -322,6 +326,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 }
 
                 for (int i = 0; i < overriddenFormals.size(); i++) {
+                    // se iau parametrii pe rand si se verifica tipul lor, pe rand
 
                     var currFormalType = currentFuncFormals.get(i).type;
                     var parentFormalType = ((IdSymbol)overriddenFormals.get(i)).type;
@@ -330,10 +335,12 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                         SymbolTable.error(
                                 currentFuncFormals.get(i).type.ctx,
                                 currentFuncFormals.get(i).type.token,
-                                "Class " + parentScope + " overrides method " + id.token.getText() +
+                                "Class " + parentScope +
+                                        " overrides method " + id.token.getText() +
                                         " but changes type of formal parameter " +
                                         currentFuncFormals.get(i).name.token.getText() +
-                                        " from " + parentFormalType.getName() + " to " + currFormalType.token.getText()
+                                        " from " + parentFormalType.getName() +
+                                        " to " + currFormalType.token.getText()
                         );
 
                         return null;
@@ -374,8 +381,10 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                     funcDefNode.body.ctx,
                     funcDefNode.body.token,
                     "Type " + bodyType +
-                            " of the body of method " + funcDefNode.funcName.token.getText() +
-                            " is incompatible with declared return type " + funcDefNode.funcType.token.getText()
+                            " of the body of method " +
+                            funcDefNode.funcName.token.getText() +
+                            " is incompatible with declared return type " +
+                            funcDefNode.funcType.token.getText()
             );
 
             return null;
