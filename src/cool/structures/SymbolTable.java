@@ -11,6 +11,22 @@ public class SymbolTable {
     public static Scope globals;
     
     private static boolean semanticErrors;
+
+    enum ILLEGAL_PARENTS {
+        INT,
+        SELF_TYPE,
+        STRING,
+        BOOL,
+        IO
+    }
+
+    public static boolean isIllegalParent(String parentClassName) {
+        for (ILLEGAL_PARENTS illegalParent : ILLEGAL_PARENTS.values()) {
+            if (parentClassName.toUpperCase().equals(illegalParent.toString())) return true;
+        }
+
+        return false;
+    }
     
     public static void defineBasicClasses() {
         globals = new DefaultScope(null);

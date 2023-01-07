@@ -29,19 +29,19 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 SymbolTable.error(
                         classNode.parent.ctx,
                         classNode.parent.token,
-                        "Class " + classNode.type.token.getText() + " has undefined parent " + inheritedClass.token.getText()
+                        "Class " + classNode.type.token.getText() +
+                                " has undefined parent " + inheritedClass.token.getText()
                 );
                 return null;
             }
 
-            // TODO: ar fi nice sa am un enum cu illegal parents
-            if (inheritedClass.token.getText().equals("SELF_TYPE") ||
-                inheritedClass.token.getText().equals("Int")) {
+            if (SymbolTable.isIllegalParent(inheritedClass.token.getText())) {
 
                 SymbolTable.error(
                     inheritedClass.ctx,
                     inheritedClass.token,
-                    "Class " + classNode.type.token.getText() +  " has illegal parent " + inheritedClass.token.getText()
+                    "Class " + classNode.type.token.getText() +
+                            " has illegal parent " + inheritedClass.token.getText()
                 );
 
                 return null;
@@ -51,8 +51,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             var parentCls = SymbolTable.globals.lookup(symbol.parentClass.getName());
             boolean found = true;
 
-            if ((parentCls != null) && (parentCls instanceof ClassSymbol)) {
-                parentCls = (ClassSymbol) parentCls;
+            if ((parentCls instanceof ClassSymbol)) {
 
                 while (!parentCls.name.equals(symbol.name)) {
                     if (((ClassSymbol) parentCls).parentClass == null) {
@@ -60,7 +59,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                         break;
                     }
 
-                    parentCls = (ClassSymbol) SymbolTable.globals.lookup(((ClassSymbol) parentCls).parentClass.name);
+                    parentCls = SymbolTable.globals.lookup(((ClassSymbol) parentCls).parentClass.name);
 
                     if (parentCls == null) {
                         found = false;
@@ -139,17 +138,13 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         var parentScope =  currentScope.getParent();
 
-        // TODO: modify this plz
-        //TODO: A good idea cred ca ar fi sa fac o trecere pt a determina mostenirile
-
         if (parentScope.lookup(symbol.getName()) != null) {
             SymbolTable.error(
                     varDefNode.name.ctx,
                     varDefNode.name.token,
-                    "Class " + currentScope + " redefines inherited attribute " + varDefNode.name.token.getText()
+                    "Class " + currentScope +
+                            " redefines inherited attribute " + varDefNode.name.token.getText()
             );
-
-//            varDefNode.name.setSymbol(null);
 
             return null;
         }
@@ -163,7 +158,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
             if (exprType == null) return null;
 
-//            var exprTypeCls = SymbolTable.globals.lookup(exprType.name);
             var clsTypeSymbol = SymbolTable.globals.lookup(typeSymbol.token.getText());
 
             if (clsTypeSymbol instanceof ClassSymbol
@@ -192,9 +186,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 return null;
             }
         }
-
-
-        // TODO: must check this again
 
         return ((IdSymbol) symbol).type;
     }
@@ -225,8 +216,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         var idType = assignNode.name.accept(this);
         var exprType = assignNode.args.accept(this);
-//        var clsSym = (ClassSymbol)SymbolTable.globals.lookup(exprType.name);
-//        var idCls = (ClassSymbol)SymbolTable.globals.lookup(idType.name);
 
         if (idType == null || exprType == null) return null;
 
@@ -260,8 +249,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 return null;
             }
 
-
-            // TODO: double check & modify
             if (idCls instanceof TypeSymbol) {
                 SymbolTable.error(
                         assignNode.args.ctx,
@@ -291,12 +278,7 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             return null;
         }
 
-        // TODO: modifica asta plz, folosit pt a skipui test 19
-        if (!(id.getScope().getParent() instanceof ClassSymbol))
-            return null;
-
         var parentScope = (ClassSymbol)id.getScope().getParent();
-
 
         if (parentScope.parentClass != null) {
             // clasa in care este definita functia este mostenita
@@ -368,19 +350,18 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
 
         if (bodyType == null) return null;
 
-        // TODO: check retType vs bodyType
-
         var clsReturnType = SymbolTable.globals.lookup(funcDefNode.funcType.token.getText());
         var clsBodyType = SymbolTable.globals.lookup(bodyType.name);
-
 
         if (clsReturnType instanceof ClassSymbol &&
                 ((ClassSymbol) clsReturnType).isInheritedType(clsBodyType.name)) {
             SymbolTable.error(
                     funcDefNode.body.ctx,
                     funcDefNode.body.token,
-                    "Type " + bodyType + " of the body of method " + funcDefNode.funcName.token.getText() +
-                            " is incompatible with declared return type " + funcDefNode.funcType.token.getText()
+                    "Type " + bodyType + " of the body of method "
+                            + funcDefNode.funcName.token.getText() +
+                            " is incompatible with declared return type "
+                            + funcDefNode.funcType.token.getText()
             );
             return null;
         }
@@ -392,7 +373,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
             SymbolTable.error(
                     funcDefNode.body.ctx,
                     funcDefNode.body.token,
-                    "Type " + bodyType + " of the body of method " + funcDefNode.funcName.token.getText() +
+                    "Type " + bodyType +
+                            " of the body of method " + funcDefNode.funcName.token.getText() +
                             " is incompatible with declared return type " + funcDefNode.funcType.token.getText()
             );
 
@@ -519,14 +501,14 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                         "Cannot compare " + leftType + " with " + rightType
                 );
 
-
                 return null;
             }
 
 
         } else {
 
-            if (leftType.name.equals(TypeSymbol.INT.name) && !rightType.name.equals(TypeSymbol.INT.name)) {
+            if (leftType.name.equals(TypeSymbol.INT.name) &&
+                    !rightType.name.equals(TypeSymbol.INT.name)) {
 
                 SymbolTable.error(
                         comparisonNode.rightOp.ctx,
@@ -539,7 +521,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 return null;
             }
 
-            if (!leftType.name.equals(TypeSymbol.INT.name) && rightType.name.equals(TypeSymbol.INT.name)) {
+            if (!leftType.name.equals(TypeSymbol.INT.name) &&
+                    rightType.name.equals(TypeSymbol.INT.name)) {
 
                 SymbolTable.error(
                         comparisonNode.leftOp.ctx,
@@ -613,7 +596,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         var thenBranchType = ifNode.thenBranch.accept(this);
         var elseBranchType = ifNode.elseBranch.accept(this);
 
-        if (condType == null || thenBranchType == null || elseBranchType == null) return null;
+        if (condType == null || thenBranchType == null || elseBranchType == null)
+            return null;
 
         if (!condType.name.equals(TypeSymbol.BOOL.name)) {
             SymbolTable.error(
@@ -628,9 +612,11 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
         var clsThen = SymbolTable.globals.lookup(thenBranchType.name);
         var clsElse = SymbolTable.globals.lookup(elseBranchType.name);
 
-        if (clsThen instanceof ClassSymbol && ((ClassSymbol)clsThen).isInheritedType(clsElse.name)) {
+        if (clsThen instanceof ClassSymbol &&
+                ((ClassSymbol)clsThen).isInheritedType(clsElse.name)) {
             return new TypeSymbol(clsElse.name);
-        } else if (clsElse instanceof ClassSymbol && ((ClassSymbol)clsElse).isInheritedType(clsThen.name)) {
+        } else if (clsElse instanceof ClassSymbol &&
+                ((ClassSymbol)clsElse).isInheritedType(clsThen.name)) {
             return new TypeSymbol(clsThen.name);
         }
 
@@ -706,7 +692,8 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
                 return null;
             }
 
-            if ((currentType instanceof TypeSymbol && !((TypeSymbol) currentType).name.equals(exprType.name))) {
+            if ((currentType instanceof TypeSymbol &&
+                    !currentType.name.equals(exprType.name))) {
                 SymbolTable.error(
                         letDefNode.val.ctx,
                         letDefNode.val.token,
@@ -733,8 +720,6 @@ public class ResolutionPassVisitor implements ASTVisitor<TypeSymbol> {
     public TypeSymbol visit(CaseBranchNode caseBranchNode) {
         var id = caseBranchNode.name;
         var type = caseBranchNode.type;
-
-        var symbol = id.getSymbol();
 
         if (SymbolTable.globals.lookup(type.token.getText()) == null) {
             SymbolTable.error(
